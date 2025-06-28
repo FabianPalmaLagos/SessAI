@@ -1,0 +1,257 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# SessAI - Performance y Optimización
+
+## Principios de Performance
+
+### Next.js App Router Optimizaciones
+- Usar Server Components por defecto, `"use client"` solo cuando sea necesario
+- Implementar Streaming UI con componentes `loading.tsx`
+- Aprovechar el cacheo automático de Next.js para datos estáticos
+
+### Optimización de Componentes
+```tsx
+// ✅ Usar Server Component cuando sea posible
+export default function PatientList({ patients }: { patients: Patient[] }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {patients.map((patient) => (
+        <PatientCard key={patient.id} patient={patient} />
+      ))}
+    </div>
+  )
+}
+
+// ✅ Client Component solo para interactividad
+"use client"
+export function SearchInput({ onSearch }: { onSearch: (term: string) => void }) {
+  const [searchTerm, setSearchTerm] = useState("")
+  // Lógica interactiva
+}
+```
+
+### Lazy Loading y Code Splitting
+```tsx
+// Lazy loading de componentes pesados
+import dynamic from 'next/dynamic'
+
+const ChartComponent = dynamic(() => import('@/components/analytics/Chart'), {
+  loading: () => <div className="animate-pulse h-64 bg-gray-200 rounded" />,
+  ssr: false
+})
+
+// Lazy loading condicional
+const AIAnalysisModal = dynamic(() => import('@/components/ai/AnalysisModal'), {
+  loading: () => <div>Cargando análisis IA...</div>
+})
+```
+
+### Gestión de Estado Eficiente
+```tsx
+// ✅ useState para estado local simple
+const [isOpen, setIsOpen] = useState(false)
+
+// ✅ useMemo para cálculos costosos
+const filteredPatients = useMemo(() => {
+  return patients.filter(patient => 
+    patient.name.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+}, [patients, searchTerm])
+
+// ✅ useCallback para funciones que se pasan como props
+const handlePatientSelect = useCallback((patientId: number) => {
+  // Lógica de selección
+}, [])
+```
+
+## Optimización de Assets
+
+### Imágenes
+```tsx
+import Image from 'next/image'
+
+// ✅ Usar Next.js Image component
+<Image
+  src="/patient-avatar.jpg"
+  alt="Avatar del paciente"
+  width={64}
+  height={64}
+  className="rounded-full"
+  priority={false} // true solo para above-the-fold
+/>
+
+// ✅ Placeholder para loading
+<Image
+  src={avatarUrl}
+  alt="Avatar"
+  width={64}
+  height={64}
+  placeholder="blur"
+  blurDataURL="data:image/jpeg;base64,..."
+/>
+```
+
+### Iconos Optimizados
+```tsx
+// ✅ Importar solo iconos necesarios
+import { User, Calendar, FileText } from "lucide-react"
+
+// ✅ Lazy load de iconos pesados si es necesario
+const AnalyticsIcon = lazy(() => import("lucide-react").then(mod => ({ default: mod.TrendingUp })))
+```
+
+## Bundle Optimization
+
+### Análisis de Bundle
+```bash
+# Analizar el tamaño del bundle
+pnpm build
+npx @next/bundle-analyzer
+```
+
+### Tree Shaking Efectivo
+```tsx
+// ✅ Importaciones específicas
+import { format } from 'date-fns'
+import { clsx } from 'clsx'
+
+// ❌ Evitar importaciones completas
+// import * as dateFns from 'date-fns'
+```
+
+### Vendor Splitting
+```javascript
+// next.config.mjs
+const nextConfig = {
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons']
+  }
+}
+```
+
+## Performance de Formularios
+
+### Optimización de Re-renders
+```tsx
+// ✅ Formularios optimizados con React Hook Form
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+const patientFormSchema = z.object({
+  name: z.string().min(1, "Nombre es requerido"),
+  email: z.string().email().optional(),
+})
+
+export function PatientForm() {
+  const form = useForm<z.infer<typeof patientFormSchema>>({
+    resolver: zodResolver(patientFormSchema),
+    defaultValues: { name: "", email: "" }
+  })
+
+  return (
+    <Form {...form}>
+      {/* Formulario sin re-renders innecesarios */}
+    </Form>
+  )
+}
+```
+
+### Debouncing de Búsquedas
+```tsx
+import { useMemo, useState } from 'react'
+import { useDebounce } from '@/hooks/useDebounce'
+
+export function PatientSearch() {
+  const [searchTerm, setSearchTerm] = useState("")
+  const debouncedSearchTerm = useDebounce(searchTerm, 300)
+
+  const filteredResults = useMemo(() => {
+    if (!debouncedSearchTerm) return patients
+    return patients.filter(/* filter logic */)
+  }, [debouncedSearchTerm, patients])
+
+  return (
+    <Input
+      placeholder="Buscar pacientes..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+  )
+}
+```
+
+## Caching Strategies
+
+### Data Fetching Optimization
+```tsx
+// Server Component con cache
+async function getPatients() {
+  const res = await fetch('/api/patients', {
+    next: { revalidate: 60 } // Cache por 60 segundos
+  })
+  return res.json()
+}
+
+// Client-side con SWR/React Query (futuro)
+import useSWR from 'swr'
+
+function usePatients() {
+  const { data, error, isLoading } = useSWR('/api/patients', fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+  })
+  
+  return { patients: data, error, isLoading }
+}
+```
+
+## Monitoring y Métricas
+
+### Core Web Vitals
+```tsx
+// pages/_app.tsx (si se usa Pages Router)
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals'
+
+function sendToAnalytics(metric) {
+  // Enviar métricas a servicio de analytics
+  console.log(metric)
+}
+
+export function reportWebVitals(metric) {
+  sendToAnalytics(metric)
+}
+```
+
+### Performance Debugging
+```tsx
+// Marcar secciones críticas para análisis
+performance.mark('patient-list-start')
+// Renderizar lista de pacientes
+performance.mark('patient-list-end')
+performance.measure('patient-list-render', 'patient-list-start', 'patient-list-end')
+```
+
+## Checklist de Performance
+
+### Antes de Deploy
+- [ ] Analizar bundle size con `@next/bundle-analyzer`
+- [ ] Verificar que imágenes usen Next.js Image component
+- [ ] Confirmar lazy loading en componentes pesados
+- [ ] Validar que Server Components se usen apropiadamente
+- [ ] Testear Core Web Vitals en Lighthouse
+
+### Optimizaciones Específicas de SessAI
+- [ ] Lista de pacientes: Implementar paginación virtual para +100 pacientes
+- [ ] Análisis IA: Streaming de resultados para UX fluida
+- [ ] Dashboard: Lazy loading de widgets no críticos
+- [ ] Sesiones: Optimizar carga de archivos de audio/video
+
+### Métricas Objetivo
+- **LCP**: < 2.5s (Largest Contentful Paint)
+- **FID**: < 100ms (First Input Delay)
+- **CLS**: < 0.1 (Cumulative Layout Shift)
+- **Bundle Size**: < 500KB initial JS load
+

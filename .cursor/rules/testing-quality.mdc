@@ -1,0 +1,440 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# SessAI - Testing y Quality Assurance
+
+## Configuración de Testing
+
+### Dependencias de Testing (Recomendadas)
+```json
+{
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^6.1.0",
+    "@testing-library/user-event": "^14.4.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "@types/jest": "^29.5.0",
+    "cypress": "^13.0.0",
+    "@playwright/test": "^1.40.0"
+  }
+}
+```
+
+### Jest Configuration
+```javascript
+// jest.config.js
+const nextJest = require('next/jest')
+
+const createJestConfig = nextJest({
+  dir: './',
+})
+
+const customJestConfig = {
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  testEnvironment: 'jest-environment-jsdom',
+  moduleNameMapping: {
+    '^@/(.*)$': '<rootDir>/$1',
+  },
+  collectCoverageFrom: [
+    'app/**/*.{js,jsx,ts,tsx}',
+    'components/**/*.{js,jsx,ts,tsx}',
+    'hooks/**/*.{js,jsx,ts,tsx}',
+    'lib/**/*.{js,jsx,ts,tsx}',
+    '!**/*.d.ts',
+    '!**/node_modules/**',
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
+    },
+  },
+}
+
+module.exports = createJestConfig(customJestConfig)
+```
+
+## Unit Testing Patterns
+
+### Componentes UI
+```tsx
+// __tests__/components/PatientCard.test.tsx
+import { render, screen, fireEvent } from '@testing-library/react'
+import { PatientCard } from '@/components/PatientCard'
+import { mockPatient } from '@/tests/mocks/patient'
+
+describe('PatientCard', () => {
+  it('should render patient information correctly', () => {
+    render(<PatientCard patient={mockPatient} />)
+    
+    expect(screen.getByText(mockPatient.name)).toBeInTheDocument()
+    expect(screen.getByText(mockPatient.rut)).toBeInTheDocument()
+    expect(screen.getByText(/Última sesión/)).toBeInTheDocument()
+  })
+
+  it('should show active badge for active patients', () => {
+    const activePatient = { ...mockPatient, status: 'Activo' }
+    render(<PatientCard patient={activePatient} />)
+    
+    expect(screen.getByText('Activo')).toHaveClass('bg-green-100')
+  })
+
+  it('should handle click events', async () => {
+    const handleClick = jest.fn()
+    render(<PatientCard patient={mockPatient} onClick={handleClick} />)
+    
+    fireEvent.click(screen.getByText('Ver Ficha'))
+    expect(handleClick).toHaveBeenCalledWith(mockPatient.id)
+  })
+})
+```
+
+### Custom Hooks
+```tsx
+// __tests__/hooks/usePatientData.test.tsx
+import { renderHook, act } from '@testing-library/react'
+import { usePatientData } from '@/hooks/usePatientData'
+
+describe('usePatientData', () => {
+  it('should initialize with empty patients array', () => {
+    const { result } = renderHook(() => usePatientData())
+    
+    expect(result.current.patients).toEqual([])
+    expect(result.current.isLoading).toBe(false)
+  })
+
+  it('should set loading state when fetching patients', async () => {
+    const { result } = renderHook(() => usePatientData())
+    
+    act(() => {
+      result.current.fetchPatients()
+    })
+    
+    expect(result.current.isLoading).toBe(true)
+  })
+})
+```
+
+### Formularios
+```tsx
+// __tests__/components/PatientForm.test.tsx
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { PatientForm } from '@/components/PatientForm'
+
+describe('PatientForm', () => {
+  it('should validate required fields', async () => {
+    const user = userEvent.setup()
+    render(<PatientForm onSubmit={jest.fn()} />)
+    
+    const submitButton = screen.getByRole('button', { name: /guardar/i })
+    await user.click(submitButton)
+    
+    expect(screen.getByText(/nombre es requerido/i)).toBeInTheDocument()
+  })
+
+  it('should submit valid form data', async () => {
+    const handleSubmit = jest.fn()
+    const user = userEvent.setup()
+    
+    render(<PatientForm onSubmit={handleSubmit} />)
+    
+    await user.type(screen.getByLabelText(/nombre/i), 'Juan Pérez')
+    await user.type(screen.getByLabelText(/email/i), 'juan@example.com')
+    await user.click(screen.getByRole('button', { name: /guardar/i }))
+    
+    await waitFor(() => {
+      expect(handleSubmit).toHaveBeenCalledWith({
+        name: 'Juan Pérez',
+        email: 'juan@example.com'
+      })
+    })
+  })
+})
+```
+
+## Integration Testing
+
+### Páginas Completas
+```tsx
+// __tests__/pages/patients.test.tsx
+import { render, screen, fireEvent } from '@testing-library/react'
+import PatientsPage from '@/app/patients/page'
+import { mockPatients } from '@/tests/mocks/patient'
+
+// Mock del router de Next.js
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    back: jest.fn(),
+  }),
+}))
+
+describe('Patients Page', () => {
+  it('should display patients list', () => {
+    render(<PatientsPage />)
+    
+    expect(screen.getByText('Gestión de Pacientes')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/buscar por nombre/i)).toBeInTheDocument()
+    expect(screen.getByText('Nuevo Paciente')).toBeInTheDocument()
+  })
+
+  it('should filter patients by search term', async () => {
+    render(<PatientsPage />)
+    
+    const searchInput = screen.getByPlaceholderText(/buscar por nombre/i)
+    fireEvent.change(searchInput, { target: { value: 'María' } })
+    
+    // Verificar que solo aparezcan pacientes filtrados
+    expect(screen.getByText('María González')).toBeInTheDocument()
+    expect(screen.queryByText('Carlos Rodríguez')).not.toBeInTheDocument()
+  })
+})
+```
+
+## Test Utilities y Mocks
+
+### Mock Data
+```tsx
+// tests/mocks/patient.ts
+export const mockPatient = {
+  id: 1,
+  name: "María González",
+  rut: "12.345.678-9",
+  email: "maria.gonzalez@email.com",
+  phone: "+56 9 8765 4321",
+  birthDate: "1985-03-15",
+  lastSession: "2024-01-15",
+  status: "Activo" as const,
+  totalSessions: 12,
+}
+
+export const mockPatients = [
+  mockPatient,
+  {
+    id: 2,
+    name: "Carlos Rodríguez",
+    rut: "98.765.432-1",
+    email: "carlos.rodriguez@email.com",
+    phone: "+56 9 1234 5678",
+    birthDate: "1990-07-22",
+    lastSession: "2024-01-10",
+    status: "Activo" as const,
+    totalSessions: 8,
+  }
+]
+```
+
+### Custom Render
+```tsx
+// tests/utils/test-utils.tsx
+import { render, RenderOptions } from '@testing-library/react'
+import { ReactElement } from 'react'
+
+// Provider personalizado para tests
+const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div>
+      {/* Agregar providers necesarios aquí */}
+      {children}
+    </div>
+  )
+}
+
+const customRender = (
+  ui: ReactElement,
+  options?: Omit<RenderOptions, 'wrapper'>,
+) => render(ui, { wrapper: AllTheProviders, ...options })
+
+export * from '@testing-library/react'
+export { customRender as render }
+```
+
+## E2E Testing
+
+### Cypress Tests
+```typescript
+// cypress/e2e/patient-management.cy.ts
+describe('Patient Management', () => {
+  beforeEach(() => {
+    cy.visit('/patients')
+  })
+
+  it('should create a new patient', () => {
+    cy.get('[data-cy=new-patient-btn]').click()
+    cy.url().should('include', '/patients/new')
+    
+    cy.get('[data-cy=patient-name]').type('Juan Pérez')
+    cy.get('[data-cy=patient-email]').type('juan@example.com')
+    cy.get('[data-cy=submit-btn]').click()
+    
+    cy.url().should('include', '/patients')
+    cy.contains('Juan Pérez').should('exist')
+  })
+
+  it('should search for patients', () => {
+    cy.get('[data-cy=search-input]').type('María')
+    cy.get('[data-cy=patient-card]').should('have.length', 1)
+    cy.contains('María González').should('exist')
+  })
+})
+```
+
+### Playwright Tests
+```typescript
+// tests/e2e/patient-flow.spec.ts
+import { test, expect } from '@playwright/test'
+
+test.describe('Patient Management Flow', () => {
+  test('complete patient creation flow', async ({ page }) => {
+    await page.goto('/patients')
+    
+    // Crear nuevo paciente
+    await page.click('[data-testid=new-patient-btn]')
+    await page.fill('[data-testid=patient-name]', 'Ana López')
+    await page.fill('[data-testid=patient-email]', 'ana@example.com')
+    await page.click('[data-testid=submit-btn]')
+    
+    // Verificar redirección y éxito
+    await expect(page).toHaveURL(/\/patients$/)
+    await expect(page.locator('text=Ana López')).toBeVisible()
+  })
+})
+```
+
+## Quality Assurance
+
+### ESLint Configuration
+```json
+// .eslintrc.json
+{
+  "extends": [
+    "next/core-web-vitals",
+    "@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "prefer-const": "error",
+    "no-var": "error"
+  },
+  "overrides": [
+    {
+      "files": ["**/__tests__/**/*", "**/*.test.*"],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
+}
+```
+
+### TypeScript Strict Mode
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  }
+}
+```
+
+### Accessibility Testing
+```tsx
+// __tests__/accessibility.test.tsx
+import { render } from '@testing-library/react'
+import { axe, toHaveNoViolations } from 'jest-axe'
+import PatientsPage from '@/app/patients/page'
+
+expect.extend(toHaveNoViolations)
+
+describe('Accessibility', () => {
+  it('should not have accessibility violations', async () => {
+    const { container } = render(<PatientsPage />)
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
+})
+```
+
+## Scripts de Testing
+
+### Package.json Scripts
+```json
+{
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "test:e2e": "cypress run",
+    "test:e2e:dev": "cypress open",
+    "test:playwright": "playwright test",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit"
+  }
+}
+```
+
+### Pre-commit Hooks
+```json
+// package.json
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "jest --findRelatedTests --passWithNoTests"
+    ]
+  }
+}
+```
+
+## Test Coverage Goals
+
+### Métricas Objetivo
+- **Componentes UI**: 85% coverage
+- **Hooks Personalizados**: 90% coverage
+- **Utilidades**: 95% coverage
+- **Páginas Principales**: 75% coverage
+
+### Estrategia de Testing
+1. **Unit Tests**: Componentes individuales y hooks
+2. **Integration Tests**: Páginas completas con mocks
+3. **E2E Tests**: Flujos críticos de usuario
+4. **Accessibility Tests**: Todos los componentes públicos
+
+### CI/CD Integration
+```yaml
+# .github/workflows/test.yml
+name: Tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: pnpm install
+      - run: pnpm test:ci
+      - run: pnpm type-check
+      - run: pnpm lint
+```
+

@@ -1,0 +1,212 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# SessAI - Guía de Reglas de Cursor
+
+## Índice de Reglas Disponibles
+
+### 1. [Arquitectura del Proyecto](mdc:.cursor/rules/sessai-architecture.mdc)
+**Propósito**: Guía completa sobre la estructura, stack tecnológico y patrones fundamentales del proyecto.
+
+**Cuándo usar**:
+- Al crear nuevas páginas o componentes
+- Para entender la estructura de directorios
+- Al configurar dependencias o herramientas
+
+**Contenido clave**:
+- Stack tecnológico detallado (Next.js, TypeScript, Tailwind, shadcn/ui)
+- Estructura de directorios con referencias a archivos
+- Patrones de desarrollo y convenciones de código
+- Hooks personalizados y tipos TypeScript
+
+### 2. [Flujo de Desarrollo](mdc:.cursor/rules/development-workflow.mdc)
+**Propósito**: Mejores prácticas para el desarrollo diario, desde configuración hasta patrones de estado.
+
+**Cuándo usar**:
+- Al implementar nuevas funcionalidades
+- Para manejar formularios y validación
+- Al trabajar con estados de carga y errores
+
+**Contenido clave**:
+- Templates para páginas nuevas
+- Patrones de formularios con React Hook Form
+- Manejo de estados de carga y errores
+- Debugging y logging
+
+### 3. [Componentes UI](mdc:.cursor/rules/ui-components.mdc)
+**Propósito**: Guía completa del sistema de diseño basado en shadcn/ui y patrones visuales.
+
+**Cuándo usar**:
+- Al crear interfaces de usuario
+- Para mantener consistencia visual
+- Al implementar formularios o layouts
+
+**Contenido clave**:
+- Catálogo de componentes disponibles
+- Patrones de layout y responsive design
+- Iconografía con Lucide React
+- Estados de validación y feedback visual
+
+### 4. [Performance y Optimización](mdc:.cursor/rules/performance-optimization.mdc)
+**Propósito**: Técnicas avanzadas para optimizar rendimiento y experiencia de usuario.
+
+**Cuándo usar**:
+- Antes de hacer deploy a producción
+- Al implementar componentes pesados
+- Para optimizar tiempos de carga
+
+**Contenido clave**:
+- Lazy loading y code splitting
+- Optimización de imágenes con Next.js
+- Bundle analysis y tree shaking
+- Core Web Vitals y métricas
+
+### 5. [Testing y Quality Assurance](mdc:.cursor/rules/testing-quality.mdc)
+**Propósito**: Estrategias completas de testing desde unit tests hasta E2E, incluyendo calidad de código.
+
+**Cuándo usar**:
+- Al implementar tests para nuevas funcionalidades
+- Para configurar pipelines de CI/CD
+- Al establecer standards de calidad
+
+**Contenido clave**:
+- Configuración de Jest y Testing Library
+- Patrones de testing para componentes y hooks
+- E2E testing con Cypress y Playwright
+- ESLint y TypeScript strict mode
+
+### 6. [Data Management & API Integration](mdc:.cursor/rules/data-api-integration.mdc)
+**Propósito**: Arquitectura de datos escalable y migración desde mock data hacia APIs reales.
+
+**Cuándo usar**:
+- Al planificar integración con backend
+- Para implementar manejo de estado global
+- Al migrar desde datos mock a APIs
+
+**Contenido clave**:
+- API client y servicios por entidad
+- Custom hooks para data fetching
+- React Query integration
+- Error handling y caching strategies
+
+## Cómo Usar las Reglas Efectivamente
+
+### Flujo de Desarrollo Recomendado
+
+#### Para Nuevas Funcionalidades
+1. **Consultar [Arquitectura](mdc:.cursor/rules/sessai-architecture.mdc)** → Entender patrones y estructura
+2. **Usar [Workflow](mdc:.cursor/rules/development-workflow.mdc)** → Templates y mejores prácticas
+3. **Aplicar [UI Components](mdc:.cursor/rules/ui-components.mdc)** → Diseño consistente
+4. **Implementar [Testing](mdc:.cursor/rules/testing-quality.mdc)** → Coverage y calidad
+
+#### Para Optimización
+1. **Revisar [Performance](mdc:.cursor/rules/performance-optimization.mdc)** → Identificar mejoras
+2. **Aplicar [Data Management](mdc:.cursor/rules/data-api-integration.mdc)** → Optimizar fetching
+3. **Validar con [Testing](mdc:.cursor/rules/testing-quality.mdc)** → Métricas y coverage
+
+#### Para Escalabilidad
+1. **Planificar con [Data Management](mdc:.cursor/rules/data-api-integration.mdc)** → APIs y estado global
+2. **Seguir [Arquitectura](mdc:.cursor/rules/sessai-architecture.mdc)** → Patrones escalables
+3. **Monitorear con [Performance](mdc:.cursor/rules/performance-optimization.mdc)** → Métricas y optimización
+
+## Quick References
+
+### Comandos Esenciales
+```bash
+# Desarrollo
+pnpm dev              # Servidor de desarrollo
+pnpm build           # Build de producción
+pnpm lint            # Verificación de código
+
+# Testing (cuando esté configurado)
+pnpm test            # Unit tests
+pnpm test:e2e        # E2E tests
+pnpm test:coverage   # Coverage report
+
+# Performance
+pnpm build && npx @next/bundle-analyzer  # Análisis de bundle
+```
+
+### Estructura de Archivos Clave
+- [app/layout.tsx](mdc:app/layout.tsx) - Layout principal
+- [components/navigation.tsx](mdc:components/navigation.tsx) - Navegación
+- [components/ui/](mdc:components/ui) - Componentes base
+- [package.json](mdc:package.json) - Dependencias y scripts
+- [tailwind.config.ts](mdc:tailwind.config.ts) - Configuración de estilos
+
+### Patrones Más Usados
+
+#### Página Nueva
+```tsx
+"use client"
+import { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+// Seguir patrón completo en development-workflow.mdc
+```
+
+#### Formulario
+```tsx
+const form = useForm<FormData>({
+  resolver: zodResolver(schema),
+  defaultValues: { /* ... */ }
+})
+// Ver patrones completos en ui-components.mdc
+```
+
+#### API Hook
+```tsx
+export function useEntity() {
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(false)
+  // Ver implementación completa en data-api-integration.mdc
+}
+```
+
+## Mantenimiento de Reglas
+
+### Actualización de Reglas
+- **Frecuencia**: Revisar mensualmente o tras cambios mayores
+- **Proceso**: Actualizar referencias a archivos si cambia la estructura
+- **Validación**: Verificar que ejemplos de código sigan funcionando
+
+### Contribución a Reglas
+1. Identificar patrón repetitivo en el desarrollo
+2. Documentar en regla existente o crear nueva si es necesario
+3. Incluir ejemplos prácticos del proyecto
+4. Referenciar archivos específicos con `[archivo](mdc:path/archivo)`
+
+### Métricas de Efectividad
+- **Tiempo de onboarding**: ¿Qué tan rápido un nuevo dev entiende el proyecto?
+- **Consistencia**: ¿Se siguen los patrones establecidos?
+- **Productividad**: ¿Las reglas aceleran el desarrollo?
+
+## Estado Actual del Proyecto
+
+### ✅ Funcionalidades Implementadas
+- Dashboard principal con navegación
+- Gestión de pacientes (lista, búsqueda, registro)
+- Componentes UI consistentes con shadcn/ui
+- Estructura de Next.js App Router
+
+### 🚧 En Desarrollo
+- Sistema de sesiones terapéuticas
+- Análisis con IA (demo disponible)
+- Calendario y citas
+- Reportes y analytics
+
+### 📋 Próximos Pasos
+- Implementación de backend APIs
+- Testing automatizado
+- Optimizaciones de performance
+- Autenticación y autorización
+
+## Contacto y Soporte
+
+Para dudas sobre las reglas o el proyecto:
+1. Consultar reglas específicas según la funcionalidad
+2. Revisar archivos de configuración relacionados
+3. Buscar patrones similares en el código existente
+4. Documentar nuevos patrones encontrados
+

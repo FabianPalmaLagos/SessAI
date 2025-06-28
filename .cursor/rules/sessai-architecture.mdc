@@ -1,0 +1,259 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# SessAI - Arquitectura y Estructura del Proyecto
+
+## Descripción General
+SessAI (TheraMind) es una aplicación de gestión terapéutica que utiliza inteligencia artificial para potenciar el trabajo de terapeutas y psicólogos.
+
+## Stack Tecnológico
+- **Framework**: Next.js 15.2.4 con App Router
+- **Lenguaje**: TypeScript 5.x
+- **Estilos**: Tailwind CSS 3.4.17
+- **Componentes**: shadcn/ui + Radix UI
+- **Iconos**: Lucide React 0.454.0
+- **Gestión de Estado**: React useState (local)
+- **Formularios**: React Hook Form 7.54.1 + Zod 3.24.1
+- **Package Manager**: pnpm
+- **Temas**: next-themes 0.4.4
+
+## Dependencias Clave
+### Core UI Libraries
+- `@radix-ui/*` - Componentes primitivos accesibles
+- `class-variance-authority` - Utilidad para variantes de componentes
+- `clsx` + `tailwind-merge` - Gestión de clases CSS
+- `cmdk` - Command palette component
+
+### Funcionalidad Específica
+- `date-fns` - Manipulación de fechas
+- `react-day-picker` - Selector de fechas
+- `recharts` - Gráficos y analytics
+- `sonner` - Sistema de notificaciones toast
+- `vaul` - Drawer components
+
+## Estructura de Directorios
+
+### Páginas Principales
+- [app/page.tsx](mdc:app/page.tsx) - Dashboard principal (TheraMind)
+- [app/patients/page.tsx](mdc:app/patients/page.tsx) - Gestión de pacientes
+- [app/patients/new/page.tsx](mdc:app/patients/new/page.tsx) - Registro de nuevos pacientes
+- [app/sessions/page.tsx](mdc:app/sessions/page.tsx) - Registro de sesiones
+- [app/ai-analysis/page.tsx](mdc:app/ai-analysis/page.tsx) - Análisis con IA
+- [app/ai-demo/page.tsx](mdc:app/ai-demo/page.tsx) - Demo de funcionalidades IA
+
+### Componentes y Utilidades
+- [components/ui/](mdc:components/ui) - Componentes de shadcn/ui
+- [components/navigation.tsx](mdc:components/navigation.tsx) - Navegación principal
+- [components/theme-provider.tsx](mdc:components/theme-provider.tsx) - Proveedor de temas
+- [hooks/](mdc:hooks/) - Custom hooks reutilizables
+- [lib/utils.ts](mdc:lib/utils.ts) - Funciones utilitarias
+
+### Configuración
+- [package.json](mdc:package.json) - Dependencias y scripts
+- [tailwind.config.ts](mdc:tailwind.config.ts) - Configuración de Tailwind
+- [tsconfig.json](mdc:tsconfig.json) - Configuración de TypeScript
+- [next.config.mjs](mdc:next.config.mjs) - Configuración de Next.js
+- [components.json](mdc:components.json) - Configuración de shadcn/ui
+
+## Patrones de Desarrollo
+
+### Estructura de Componentes de Página
+```tsx
+"use client"
+
+import { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Icon } from "lucide-react"
+import Link from "next/link"
+
+interface PageData {
+  // Definir tipos específicos aquí
+}
+
+export default function PageName() {
+  const [data, setData] = useState<PageData>({})
+  const [isLoading, setIsLoading] = useState(false)
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto p-6">
+        {/* Header con navegación */}
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Título</h1>
+            <p className="text-gray-600">Descripción</p>
+          </div>
+          {/* Acciones principales */}
+        </div>
+        
+        {/* Contenido principal */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Icon className="h-5 w-5 text-blue-600" />
+              Sección
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* Contenido */}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}
+```
+
+### Hooks Personalizados Recomendados
+```tsx
+// hooks/usePatientData.ts
+export function usePatientData() {
+  const [patients, setPatients] = useState<Patient[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  
+  const fetchPatients = async () => {
+    setIsLoading(true)
+    // Lógica de fetch
+    setIsLoading(false)
+  }
+  
+  return { patients, isLoading, fetchPatients }
+}
+```
+
+### Tipos TypeScript Centralizados
+```tsx
+// types/patient.ts
+export interface Patient {
+  id: number
+  name: string
+  rut?: string
+  email?: string
+  phone?: string
+  birthDate?: string
+  status: 'Activo' | 'Inactivo'
+  lastSession?: string
+  totalSessions: number
+}
+
+// types/session.ts
+export interface Session {
+  id: number
+  patientId: number
+  date: string
+  duration: number
+  notes: string
+  type: 'Presencial' | 'Virtual'
+}
+```
+
+## Convenciones de Código
+
+### Naming Conventions
+- **Componentes**: PascalCase (ej: `NewPatientPage`)
+- **Archivos**: kebab-case para directorios, PascalCase para componentes
+- **Variables**: camelCase
+- **Interfaces**: PascalCase con sufijo apropiado (ej: `PatientFormData`)
+- **Hooks**: camelCase con prefijo `use` (ej: `usePatientData`)
+- **Constantes**: UPPER_SNAKE_CASE (ej: `MAX_PATIENTS_PER_PAGE`)
+
+### Imports Organization
+```tsx
+// 1. React y Next.js
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+
+// 2. Librerías externas
+import { format } from "date-fns"
+
+// 3. Componentes UI
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+
+// 4. Iconos
+import { User, Calendar } from "lucide-react"
+
+// 5. Hooks y utilidades propias
+import { usePatientData } from "@/hooks/usePatientData"
+
+// 6. Tipos e interfaces
+import type { Patient } from "@/types/patient"
+```
+
+### Estructura de Formularios Avanzada
+```tsx
+interface FormData {
+  required: string
+  optional?: string
+}
+
+const [formData, setFormData] = useState<FormData>({
+  required: ""
+})
+
+// Handler genérico para inputs
+const handleInputChange = <K extends keyof FormData>(
+  field: K, 
+  value: FormData[K]
+) => {
+  setFormData(prev => ({ ...prev, [field]: value }))
+}
+
+// Validación
+const isFormValid = useMemo(() => {
+  return formData.required.trim() !== ""
+}, [formData])
+```
+
+## Funcionalidades Implementadas
+
+### ✅ Completadas
+- Dashboard principal con métricas
+- Gestión de pacientes (lista, búsqueda, registro)
+- Navegación principal responsive
+- Sistema de componentes UI consistente
+
+### 🚧 En Desarrollo
+- Registro de sesiones
+- Análisis con IA
+- Sistema de calendario
+- Reportes y analytics
+- Demo interactivo de IA
+
+### 📋 Planificadas
+- Autenticación y autorización
+- API backend integration
+- Sistema de notificaciones
+- Exportación de datos
+- Modo oscuro
+
+## Comandos de Desarrollo
+```bash
+pnpm install     # Instalar dependencias
+pnpm dev         # Servidor de desarrollo (puerto 3000)
+pnpm build       # Build de producción  
+pnpm start       # Servidor de producción
+pnpm lint        # Verificación de código con ESLint
+```
+
+## Consideraciones Técnicas
+
+### Performance
+- Usar `"use client"` solo cuando sea necesario
+- Implementar lazy loading para componentes pesados
+- Optimizar imágenes con Next.js Image component
+
+### Accesibilidad
+- Todos los componentes de Radix UI incluyen ARIA labels
+- Usar semantic HTML apropiado
+- Testear con lectores de pantalla
+
+### Escalabilidad
+- Preparado para Context API o Zustand para estado global
+- Estructura modular para fácil mantenimiento
+- TypeScript estricto para prevenir errores
+

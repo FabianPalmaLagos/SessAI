@@ -1,0 +1,243 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# SessAI - Flujo de Desarrollo y Mejores Prácticas
+
+## Configuración del Entorno
+
+### Comandos Esenciales
+```bash
+pnpm install     # Instalar dependencias
+pnpm dev         # Servidor de desarrollo (puerto 3000)
+pnpm build       # Build de producción
+pnpm start       # Servidor de producción
+pnpm lint        # Verificación de código con ESLint
+```
+
+### Archivos de Configuración Clave
+- [package.json](mdc:package.json) - Dependencias y scripts del proyecto
+- [tsconfig.json](mdc:tsconfig.json) - Configuración de TypeScript
+- [tailwind.config.ts](mdc:tailwind.config.ts) - Configuración de Tailwind CSS
+- [next.config.mjs](mdc:next.config.mjs) - Configuración de Next.js
+- [.eslintrc.json](mdc:.eslintrc.json) - Configuración de ESLint
+
+## Estructura de Desarrollo
+
+### Creación de Nuevas Páginas
+1. **Ubicación**: Crear en `app/[ruta]/page.tsx`
+2. **Estructura base**:
+```tsx
+"use client"
+
+import { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Icon } from "lucide-react"
+import Link from "next/link"
+
+interface DataInterface {
+  // Definir tipos aquí
+}
+
+export default function PageName() {
+  const [state, setState] = useState<DataInterface>({})
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto p-6">
+        {/* Contenido */}
+      </div>
+    </div>
+  )
+}
+```
+
+### Navegación Consistente
+- **Enlaces internos**: Usar `Link` de Next.js
+- **Botón volver**: Incluir en páginas secundarias
+- **Breadcrumbs**: Para navegación profunda
+- **Acciones rápidas**: En dashboard principal
+
+## Patrones de Estado
+
+### Formularios
+```tsx
+interface FormData {
+  field1: string
+  field2: string
+  // Más campos...
+}
+
+const [formData, setFormData] = useState<FormData>({
+  field1: "",
+  field2: ""
+})
+
+const handleInputChange = (field: keyof FormData, value: string) => {
+  setFormData(prev => ({
+    ...prev,
+    [field]: value
+  }))
+}
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setIsSubmitting(true)
+  
+  // Lógica de envío
+  setTimeout(() => {
+    console.log("Datos:", formData)
+    setIsSubmitting(false)
+    router.push("/redirect-path")
+  }, 2000)
+}
+```
+
+### Estados de Carga
+```tsx
+const [isLoading, setIsLoading] = useState(false)
+const [isSubmitting, setIsSubmitting] = useState(false)
+const [error, setError] = useState<string | null>(null)
+```
+
+## Validación y Errores
+
+### Validación de Formularios
+```tsx
+const isFormValid = formData.requiredField.trim() !== ""
+
+// En el JSX
+<Button 
+  type="submit" 
+  disabled={!isFormValid || isSubmitting}
+>
+  {isSubmitting ? "Guardando..." : "Guardar"}
+</Button>
+```
+
+### Manejo de Errores
+```tsx
+{error && (
+  <Card className="border-red-200 bg-red-50">
+    <CardContent className="pt-6">
+      <div className="flex items-center gap-2 text-red-700">
+        <AlertCircle className="h-4 w-4" />
+        <span className="text-sm">{error}</span>
+      </div>
+    </CardContent>
+  </Card>
+)}
+```
+
+## Datos Mock y Simulación
+
+### Estructura de Datos Mock
+```tsx
+const mockData = [
+  {
+    id: 1,
+    name: "Ejemplo",
+    status: "Activo",
+    // Más campos...
+  }
+]
+```
+
+### Simulación de APIs
+```tsx
+// Simular delay de red
+setTimeout(() => {
+  // Lógica de respuesta
+  setIsLoading(false)
+}, 1000)
+```
+
+## TypeScript Best Practices
+
+### Interfaces
+- Usar PascalCase para nombres
+- Incluir comentarios para campos complejos
+- Agrupar por funcionalidad
+
+### Tipos de Props
+```tsx
+interface ComponentProps {
+  title: string
+  optional?: boolean
+  onAction: () => void
+}
+
+export default function Component({ title, optional = false, onAction }: ComponentProps) {
+  // Implementación
+}
+```
+
+## Debugging y Logging
+
+### Console Logging
+```tsx
+console.log("Datos del formulario:", formData)
+console.error("Error:", error)
+```
+
+### Desarrollo Local
+- Servidor corre en `http://localhost:3000`
+- Hot reload automático
+- Errores mostrados en consola del navegador
+
+## Documentación
+
+### Comentarios en Código
+```tsx
+// Sección principal del formulario
+{/* Header de la página */}
+```
+
+### Changelog
+- Mantener [CHANGELOG.md](mdc:CHANGELOG.md) actualizado
+- Documentar nuevas funcionalidades
+- Incluir breaking changes
+
+## Próximos Pasos de Desarrollo
+
+### Funcionalidades Pendientes
+1. **Backend Integration**
+   - API endpoints para CRUD de pacientes
+   - Base de datos (PostgreSQL/MongoDB)
+   - Autenticación y autorización
+
+2. **Mejoras de UI/UX**
+   - Modo oscuro
+   - Animaciones y transiciones
+   - Componentes de feedback mejorados
+
+3. **Funcionalidades Avanzadas**
+   - Sistema de notificaciones
+   - Exportación de datos
+   - Búsqueda avanzada con filtros
+   - Dashboard con métricas en tiempo real
+
+### Consideraciones de Arquitectura
+- **Estado Global**: Evaluar Context API o Zustand
+- **Caching**: Implementar React Query o SWR
+- **Testing**: Jest + React Testing Library
+- **Deployment**: Vercel o similar
+
+## Herramientas de Desarrollo
+
+### VS Code Extensions Recomendadas
+- TypeScript Importer
+- Tailwind CSS IntelliSense
+- ES7+ React/Redux/React-Native snippets
+- Auto Rename Tag
+- Prettier - Code formatter
+
+### Git Workflow
+```bash
+git add .
+git commit -m "feat: descripción del cambio"
+git push origin main
+```
+
