@@ -15,6 +15,10 @@ export default function AIAnalysisPage() {
   const [selectedPatient, setSelectedPatient] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedReport, setGeneratedReport] = useState("")
+  const [unstructuredNotes, setUnstructuredNotes] = useState("")
+  const [instruction, setInstruction] = useState("")
+  const [structuredResult, setStructuredResult] = useState("")
+  const [isStructuring, setIsStructuring] = useState(false)
 
   const handleGenerateReport = () => {
     setIsGenerating(true)
@@ -52,6 +56,25 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
       `)
       setIsGenerating(false)
     }, 3000)
+  }
+
+  const handleStructureNotes = () => {
+    setIsStructuring(true)
+    setStructuredResult("")
+    // Simular generación de informe
+    setTimeout(() => {
+      // Ejemplo de respuesta basada en la instrucción
+      let result = `## Resultado de IA\n\n**Instrucción:** ${instruction || "Estructurar notas"}\n\n**Notas Originales:**\n${unstructuredNotes}\n\n---\n\n`
+      if (instruction.toLowerCase().includes("resumen")) {
+        result += `### Resumen de la Sesión\nEl paciente discutió sus dificultades para dormir y la ansiedad relacionada con el trabajo. Se exploraron técnicas de relajación y se acordó practicar la meditación mindfulness diariamente.`
+      } else if (instruction.toLowerCase().includes("soap")) {
+        result += `### Formato SOAP\n**S (Subjetivo):** Paciente reporta "No he podido dormir bien esta semana, me siento muy ansioso por el trabajo."\n**O (Objetivo):** Se observa inquietud motora y discurso acelerado.\n**A (Análisis):** Ansiedad generalizada exacerbada por estresores laborales. Dificultad para iniciar y mantener el sueño.\n**P (Plan):** Introducir técnicas de higiene del sueño. Practicar ejercicio de respiración diafragmática (5 min, 2 veces al día). Tarea: llevar un registro de pensamientos ansiógenos antes de dormir.`
+      } else {
+        result += `### Notas Estructuradas\n**Tema Principal:** Ansiedad laboral y problemas de sueño.\n**Puntos Clave:**\n- Dificultad para conciliar el sueño.\n- Preocupación constante por responsabilidades laborales.\n- Interés en aprender técnicas de manejo de estrés.\n**Plan de Acción:**\n1.  Practicar meditación mindfulness (10 min/día).\n2.  Utilizar la técnica de "preocupación programada".\n3.  Revisar avances en la próxima sesión.`
+      }
+      setStructuredResult(result)
+      setIsStructuring(false)
+    }, 2500)
   }
 
   return (
@@ -103,21 +126,6 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
                       <label className="text-sm font-medium mb-2 block text-foreground">Fecha Fin</label>
                       <Input type="date" />
                     </div>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium mb-2 block text-foreground">Tipo de Informe</label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar tipo..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="progress">Informe de Progreso</SelectItem>
-                        <SelectItem value="summary">Resumen de Sesiones</SelectItem>
-                        <SelectItem value="patterns">Análisis de Patrones</SelectItem>
-                        <SelectItem value="recommendations">Recomendaciones Terapéuticas</SelectItem>
-                      </SelectContent>
-                    </Select>
                   </div>
 
                   <Button onClick={handleGenerateReport} disabled={isGenerating} className="w-full">
@@ -192,24 +200,59 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
                   <Sparkles className="h-5 w-5 text-primary" />
                   Asistente de Documentación
                 </CardTitle>
-                <CardDescription>Estructura y mejora tus notas de sesión con IA</CardDescription>
+                <CardDescription>Estructura y mejora tus notas de sesión con IA. Puedes darle una instrucción específica o dejarlo en blanco para una estructuración general.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block text-foreground">Notas sin estructurar</label>
-                  <Textarea placeholder="Pega aquí tus notas de sesión para que la IA las estructure..." rows={8} />
+                  <label htmlFor="instruction" className="text-sm font-medium mb-2 block text-foreground">Instrucción para la IA</label>
+                  <Input 
+                    id="instruction"
+                    placeholder="Ej: 'Genera un resumen en 5 puntos' o 'Convierte a formato SOAP'" 
+                    value={instruction}
+                    onChange={(e) => setInstruction(e.target.value)}
+                  />
                 </div>
 
-                <Button className="w-full">
-                  <Brain className="h-4 w-4 mr-2" />
-                  Estructurar con IA
+                <div>
+                  <label htmlFor="unstructured-notes" className="text-sm font-medium mb-2 block text-foreground">Notas sin estructurar</label>
+                  <Textarea
+                    id="unstructured-notes"
+                    placeholder="Pega aquí tus notas de sesión para que la IA las estructure..."
+                    rows={8}
+                    value={unstructuredNotes}
+                    onChange={(e) => setUnstructuredNotes(e.target.value)}
+                  />
+                </div>
+
+                <Button onClick={handleStructureNotes} disabled={isStructuring || !unstructuredNotes} className="w-full">
+                  {isStructuring ? (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2 animate-spin" />
+                      Generando...
+                    </>
+                  ) : (
+                    <>
+                      <Brain className="h-4 w-4 mr-2" />
+                      Generar con IA
+                    </>
+                  )}
                 </Button>
 
-                <div className="bg-muted p-4 rounded-lg">
-                  <h4 className="font-medium mb-2 text-foreground">Resultado Estructurado:</h4>
-                  <div className="text-sm text-muted-foreground">
-                    <p className="italic">Las notas estructuradas aparecerán aquí...</p>
-                  </div>
+                <div className="bg-muted p-4 rounded-lg min-h-[100px]">
+                  <h4 className="font-medium mb-2 text-foreground">Resultado Generado:</h4>
+                  {isStructuring ? (
+                     <div className="space-y-2">
+                        <div className="h-4 bg-slate-200 rounded animate-pulse"></div>
+                        <div className="h-4 bg-slate-200 rounded animate-pulse w-5/6"></div>
+                        <div className="h-4 bg-slate-200 rounded animate-pulse w-3/4"></div>
+                     </div>
+                  ) : structuredResult ? (
+                    <pre className="whitespace-pre-wrap text-sm font-sans">{structuredResult}</pre>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">
+                      <p className="italic">El resultado generado por la IA aparecerá aquí...</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
