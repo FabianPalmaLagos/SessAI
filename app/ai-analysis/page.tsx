@@ -90,10 +90,9 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
         </div>
 
         <Tabs defaultValue="generate-report" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="generate-report">Generar Informe</TabsTrigger>
             <TabsTrigger value="document-assistant">Asistente Documentación</TabsTrigger>
-            <TabsTrigger value="insights">Insights IA</TabsTrigger>
           </TabsList>
 
           <TabsContent value="generate-report">
@@ -256,57 +255,6 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="insights">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-primary" />
-                    Patrones Identificados
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="default">
-                        Positivo
-                      </Badge>
-                      <span className="text-sm text-foreground">85% de pacientes mejoran en primeras 6 sesiones</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary">
-                        Insight
-                      </Badge>
-                      <span className="text-sm text-foreground">Técnicas CBT más efectivas en horario matutino</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="destructive">
-                        Atención
-                      </Badge>
-                      <span className="text-sm text-foreground">3 pacientes requieren seguimiento más frecuente</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertCircle className="h-5 w-5 text-destructive" />
-                    Recomendaciones IA
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3 text-sm">
-                    <p>• Considerar sesiones grupales para pacientes con ansiedad social</p>
-                    <p>• Implementar técnicas de mindfulness en casos de estrés laboral</p>
-                    <p>• Revisar frecuencia de sesiones para pacientes con progreso lento</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
           </TabsContent>
         </Tabs>
 

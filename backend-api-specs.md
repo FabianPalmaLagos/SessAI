@@ -13,7 +13,7 @@ Permite al terapeuta generar informes estructurados sobre un paciente en un per�
 ### Lógica de Negocio
 1.  Recibir `patientId`, `startDate` y `endDate`.
 2.  Consultar en la base de datos todas las sesiones, notas y evaluaciones del paciente dentro del rango de fechas.
-3.  Consolidar la información y enviarla a un servicio de IA (ej. GPT-4) con un prompt para generar un informe de progreso completo.
+3.  Consolidar la información y enviarla a un servicio de IA (Gemini) con un prompt para generar un informe de progreso completo.
 4.  Recibir la respuesta de la IA y devolverla como una cadena de texto en formato Markdown.
 
 ### Request Body (Payload)
@@ -62,8 +62,8 @@ Ayuda al terapeuta a procesar y estructurar notas de sesión de forma rápida.
 ### Lógica de Negocio
 1.  Recibir `unstructuredNotes` y una `instruction` opcional.
 2.  Enviar la información al servicio de IA. El prompt debe ser dinámico:
-    -   Si existe una instrucción, se debe priorizar (ej: "Genera un resumen de este texto: ...").
-    -   Si no hay instrucción, usar un prompt por defecto (ej: "Estructura estas notas de sesión en temas clave y plan de acción: ...").
+    -   Si existe una instrucción, se debe adaptar al prompt default.
+    -   Si no hay instrucción, usar un prompt por defecto.
 3.  Devolver el texto procesado por la IA.
 
 ### Request Body (Payload)
@@ -81,34 +81,9 @@ Ayuda al terapeuta a procesar y estructurar notas de sesión de forma rápida.
 }
 ```
 
-## 3. Funcionalidad: Insights de IA
 
-Muestra patrones y tendencias a nivel general (no para un solo paciente).
 
-### Endpoint Principal
-- **Ruta:** `GET /api/ai/insights`
-- **Descripción:** Obtiene los insights de IA pre-calculados más recientes.
-
-### Lógica de Negocio
-1.  **Proceso Asíncrono (Recomendado):** Implementar un proceso en segundo plano (ej. un cron job semanal) que analice de forma anónima los datos de todos los pacientes para identificar tendencias y patrones.
-2.  Los resultados de este análisis se deben almacenar en una tabla o colección en la base de datos.
-3.  Este endpoint consultará y devolverá los insights pre-calculados de dicha tabla.
-
-### Response Body
-```json
-{
-  "insights": [
-    {
-      "id": "string",
-      "type": "'positive' | 'insight' | 'attention'",
-      "description": "string",
-      "generatedAt": "string (ISO 8601)"
-    }
-  ]
-}
-```
-
-## 4. Funcionalidades de Soporte
+## 3. Funcionalidades de Soporte
 
 Endpoints necesarios para el correcto funcionamiento de la interfaz.
 
