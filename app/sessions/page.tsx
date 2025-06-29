@@ -52,9 +52,9 @@ export default function SessionsPage() {
             <p className="text-sm text-blue-600">
               Para registrar una nueva sesión, ve a la ficha del paciente y haz clic en "Nueva Sesión". 
               Esto asegura que la sesión esté correctamente vinculada al paciente.
-            </p>
-          </CardContent>
-        </Card>
+                    </p>
+                </CardContent>
+              </Card>
 
         <div className="space-y-6">
             <div className="space-y-4">

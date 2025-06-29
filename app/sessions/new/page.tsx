@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { ArrowLeft, Mic, Upload, Pause, Brain, User, Save, AlertCircle, FileText, Mail, Phone } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
+import { ArrowLeft, Mic, Upload, Pause, Brain, User, Save, AlertCircle, FileText, Mail, Phone, Sparkles, Undo2 } from "lucide-react"
 import Link from "next/link"
 
 // Mock data para pacientes (igual que en la ficha del paciente)
@@ -53,6 +56,12 @@ export default function NewSessionPage() {
   const [recordingTime, setRecordingTime] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  
+  const [isStructuring, setIsStructuring] = useState(false)
+  const [showAIModal, setShowAIModal] = useState(false)
+  const [originalContent, setOriginalContent] = useState("")
+  const [structuredContent, setStructuredContent] = useState("")
+  const [contentWasReplaced, setContentWasReplaced] = useState(false)
 
   const [formData, setFormData] = useState<SessionFormData>({
     patientId: patientIdParam || "",
@@ -89,6 +98,53 @@ export default function NewSessionPage() {
       age--
     }
     return age
+  }
+
+  const handleStructureWithAI = () => {
+    if (!formData.sessionContent.trim()) return
+    
+    setOriginalContent(formData.sessionContent)
+    setIsStructuring(true)
+
+    // Simular llamada a API de IA
+    setTimeout(() => {
+      const structuredText = `<h3>Temas Tratados</h3>
+<ul>
+  <li><p>El paciente expresó sentimientos de <strong>ansiedad</strong> relacionados con su trabajo.</p></li>
+  <li><p>Se discutió la dificultad para establecer <strong>límites</strong> con familiares.</p></li>
+  <li><p>Exploración de patrones de <strong>sueño</strong> y su impacto en el estado de ánimo.</p></li>
+</ul>
+<h3>Técnicas Utilizadas</h3>
+<ul>
+  <li><p>Se aplicó la técnica de <em>reestructuración cognitiva</em> para abordar pensamientos negativos.</p></li>
+  <li><p>Ejercicio de <em>respiración diafragmática</em> para manejo de la ansiedad en el momento.</p></li>
+</ul>
+<h3>Observaciones del Terapeuta</h3>
+<ul>
+  <li><p>El paciente muestra alta motivación para el cambio, pero lucha con la <strong>autocrítica</strong>.</p></li>
+  <li><p>Se observa una tendencia a <em>minimizar sus logros</em>.</p></li>
+</ul>
+<h3>Plan para la Próxima Sesión</h3>
+<ul>
+  <li><p>Revisar el registro de pensamientos automáticos (tarea asignada).</p></li>
+  <li><p>Profundizar en técnicas de comunicación asertiva.</p></li>
+</ul>`
+      
+      setStructuredContent(structuredText)
+      setIsStructuring(false)
+      setShowAIModal(true)
+    }, 1500)
+  }
+
+  const handleAcceptAIContent = () => {
+    handleInputChange('sessionContent', structuredContent)
+    setContentWasReplaced(true)
+    setShowAIModal(false)
+  }
+  
+  const handleUndoReplace = () => {
+    handleInputChange('sessionContent', originalContent)
+    setContentWasReplaced(false)
   }
 
   const handleInputChange = <K extends keyof SessionFormData>(field: K, value: SessionFormData[K]) => {
@@ -215,18 +271,39 @@ export default function NewSessionPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Brain className="h-5 w-5 text-green-600" />Contenido de la Sesión</CardTitle>
-              <CardDescription>Registra los aspectos clínicos y terapéuticos de la sesión</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2"><Brain className="h-5 w-5 text-green-600" />Contenido de la Sesión</CardTitle>
+                  <CardDescription>Registra los aspectos clínicos y terapéuticos de la sesión</CardDescription>
+                </div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="outline" size="icon" onClick={handleStructureWithAI} disabled={isStructuring}>
+                        {isStructuring ? <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" /> : <Sparkles className="h-4 w-4" />}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Estructurar con IA</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <Label htmlFor="sessionContent">Registro Clínico *</Label>
-                <Textarea
-                  id="sessionContent"
-                  placeholder="Escribe aquí las notas de la sesión, temas tratados, técnicas utilizadas, etc."
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="sessionContent">Registro Clínico *</Label>
+                  {contentWasReplaced && (
+                    <Button type="button" variant="ghost" size="sm" onClick={handleUndoReplace} className="text-xs">
+                      <Undo2 className="h-3 w-3 mr-1" />
+                      Deshacer reemplazo
+                    </Button>
+                  )}
+                </div>
+                <RichTextEditor
                   value={formData.sessionContent}
-                  onChange={e => handleInputChange('sessionContent', e.target.value)}
-                  rows={12}
+                  onChange={(content) => handleInputChange('sessionContent', content)}
                 />
               </div>
             </CardContent>
@@ -254,6 +331,33 @@ export default function NewSessionPage() {
             </Button>
           </div>
         </form>
+
+        <Dialog open={showAIModal} onOpenChange={setShowAIModal}>
+          <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-purple-500" />
+                Asistente de Documentación IA
+              </DialogTitle>
+              <DialogDescription>
+                La IA ha estructurado tus notas. Puedes editar el resultado antes de aceptarlo.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-4">
+              <div className="space-y-2">
+                <Label>Resultado Estructurado:</Label>
+                <RichTextEditor 
+                  value={structuredContent}
+                  onChange={setStructuredContent}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setShowAIModal(false)}>Cancelar</Button>
+              <Button onClick={handleAcceptAIContent}>Aceptar y Reemplazar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )
