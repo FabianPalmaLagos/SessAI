@@ -1,0 +1,101 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Theming and UI Component Patterns
+
+This guide covers best practices for theming, dark mode, and using specific UI components to maintain visual consistency throughout the SessAI application.
+
+## 🎨 Theming and Dark Mode
+
+The application supports both light and dark themes. To ensure components adapt correctly, **never use hardcoded colors**. Instead, use the semantic CSS variables defined in `[app/globals.css](mdc:app/globals.css)` and configured in `[tailwind.config.ts](mdc:tailwind.config.ts)`. The theme is managed by the `ThemeProvider` in `[app/layout.tsx](mdc:app/layout.tsx)`.
+
+### Key Color Variables
+
+- **Backgrounds**:
+  - `bg-background`: For main page backgrounds.
+  - `bg-card`: For card elements.
+  - `bg-muted`: For subtle backgrounds, like the new structured text result box.
+
+- **Text**:
+  - `text-foreground`: For primary text.
+  - `text-muted-foreground`: For secondary, descriptive, or placeholder text.
+
+- **Accents & Icons**:
+  - `text-primary`: For primary-colored elements, such as important icons in headers.
+  - `text-destructive`: For elements indicating a warning or destructive action (e.g., alerts, error icons).
+
+- **Borders & Inputs**:
+  - `border`: For all component borders.
+  - `input`: For the background of input fields.
+  - `ring`: For focus rings.
+
+### Example: Theme-Aware Card Header
+
+```tsx
+// ✅ Correct: Uses semantic variables
+<CardHeader>
+  <CardTitle className="flex items-center gap-2">
+    <User className="h-5 w-5 text-primary" />
+    Datos Personales
+  </CardTitle>
+  <CardDescription className="text-muted-foreground">
+    Información básica del paciente
+  </CardDescription>
+</CardHeader>
+
+// ❌ Incorrect: Uses hardcoded colors
+<CardHeader>
+  <CardTitle className="flex items-center gap-2">
+    <User className="h-5 w-5 text-blue-600" />
+    Datos Personales
+  </CardTitle>
+  <CardDescription className="text-gray-600">
+    Información básica del paciente
+  </CardDescription>
+</CardHeader>
+```
+
+## 🧩 Component Usage Best Practices
+
+To ensure consistency, prefer using `shadcn/ui` components over native HTML elements or custom-styled divs.
+
+### Alerts
+
+Always use the `[Alert](mdc:components/ui/alert.tsx)` component for displaying validation errors or important messages. Do not create custom alert components with static colors.
+
+- **Usage**:
+  ```tsx
+  import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+
+  <Alert variant="destructive">
+    <AlertCircle className="h-4 w-4" />
+    <AlertTitle>Campo Requerido</AlertTitle>
+    <AlertDescription>
+      Por favor ingresa el nombre del paciente.
+    </AlertDescription>
+  </Alert>
+  ```
+
+### Select Dropdowns
+
+Replace native `<select>` elements with the `[Select](mdc:components/ui/select.tsx)` component to ensure consistent styling across all themes.
+
+### Rich Text Editor
+
+For inputs requiring formatted text, such as clinical notes, use the custom `[RichTextEditor](mdc:components/ui/rich-text-editor.tsx)` component instead of a standard `<Textarea>`.
+
+- **Key Features**:
+  - Built with Tiptap.
+  - Provides a toolbar with basic formatting options (bold, italic, lists).
+  - Fully theme-aware.
+- **Usage**:
+  ```tsx
+  import { RichTextEditor } from "@/components/ui/rich-text-editor"
+
+  <RichTextEditor
+    value={formData.sessionContent}
+    onChange={(content) => handleInputChange('sessionContent', content)}
+  />
+  ```

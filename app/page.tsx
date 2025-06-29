@@ -5,12 +5,12 @@ import Link from "next/link"
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">SessAI</h1>
-          <p className="text-lg text-gray-600">
+          <h1 className="text-4xl font-bold text-foreground mb-2">SessAI</h1>
+          <p className="text-lg text-muted-foreground">
             Potenciando el arte de la terapia con la precisión de la inteligencia artificial
           </p>
         </div>
@@ -67,7 +67,7 @@ export default function Dashboard() {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-blue-600" />
+                <Users className="h-5 w-5 text-primary" />
                 Gestión de Pacientes
               </CardTitle>
               <CardDescription>Administra fichas, historiales y búsqueda avanzada de pacientes</CardDescription>
@@ -82,7 +82,7 @@ export default function Dashboard() {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-green-600" />
+                <FileText className="h-5 w-5 text-primary" />
                 Registro de Sesiones
               </CardTitle>
               <CardDescription>Grabación, transcripción automática y registro multimodal</CardDescription>
@@ -97,7 +97,7 @@ export default function Dashboard() {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Brain className="h-5 w-5 text-purple-600" />
+                <Brain className="h-5 w-5 text-primary" />
                 Análisis con IA
               </CardTitle>
               <CardDescription>Generación de informes y asistente de documentación inteligente</CardDescription>
@@ -112,7 +112,7 @@ export default function Dashboard() {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-orange-600" />
+                <Calendar className="h-5 w-5 text-primary" />
                 Agenda y Citas
               </CardTitle>
               <CardDescription>Calendario integrado y gestión de citas</CardDescription>
@@ -127,7 +127,7 @@ export default function Dashboard() {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-red-600" />
+                <TrendingUp className="h-5 w-5 text-primary" />
                 Reportes y Analytics
               </CardTitle>
               <CardDescription>Análisis de tendencias y métricas de progreso</CardDescription>
@@ -139,9 +139,9 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow border-2 border-blue-200 bg-blue-50">
+          <Card className="hover:shadow-lg transition-shadow border-2 border-primary/20 bg-primary/5">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-blue-700">
+              <CardTitle className="flex items-center gap-2 text-primary">
                 <Brain className="h-5 w-5" />
                 Demo IA en Vivo
               </CardTitle>
@@ -149,7 +149,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <Link href="/ai-demo">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">Probar IA</Button>
+                <Button className="w-full" variant="secondary">Probar IA</Button>
               </Link>
             </CardContent>
           </Card>
@@ -157,7 +157,7 @@ export default function Dashboard() {
 
         {/* Quick Actions */}
         <div className="mt-8">
-          <h2 className="text-2xl font-semibold mb-4">Acciones Rápidas</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-foreground">Acciones Rápidas</h2>
           <div className="flex flex-wrap gap-4">
             <Link href="/patients/new">
               <Button variant="outline">+ Nuevo Paciente</Button>

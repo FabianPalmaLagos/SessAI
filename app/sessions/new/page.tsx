@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
@@ -165,7 +166,7 @@ export default function NewSessionPage() {
   const isFormValid = formData.patientId && formData.sessionContent.trim() !== ""
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="container mx-auto p-6">
         <div className="flex items-center gap-4 mb-6">
           <Button variant="outline" size="sm" onClick={() => router.back()}>
@@ -173,8 +174,8 @@ export default function NewSessionPage() {
             Volver
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Nueva Sesión Terapéutica</h1>
-            <p className="text-gray-600">Registra una nueva sesión con grabación y transcripción automática</p>
+            <h1 className="text-3xl font-bold text-foreground">Nueva Sesión Terapéutica</h1>
+            <p className="text-muted-foreground">Registra una nueva sesión con grabación y transcripción automática</p>
           </div>
         </div>
 
@@ -200,33 +201,33 @@ export default function NewSessionPage() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4 text-sm">
                   <div>
-                    <Label className="text-gray-500">Nombre</Label>
-                    <p className="font-medium text-gray-800">{selectedPatient.name}</p>
+                    <Label className="text-muted-foreground">Nombre</Label>
+                    <p className="font-medium text-foreground">{selectedPatient.name}</p>
                   </div>
                   <div>
-                    <Label className="text-gray-500">RUT</Label>
-                    <p className="font-medium text-gray-800">{selectedPatient.rut}</p>
+                    <Label className="text-muted-foreground">RUT</Label>
+                    <p className="font-medium text-foreground">{selectedPatient.rut}</p>
                   </div>
                   <div>
-                    <Label className="text-gray-500">Nacimiento</Label>
-                    <p className="font-medium text-gray-800">{selectedPatient.birthDate} ({calculateAge(selectedPatient.birthDate)} años)</p>
+                    <Label className="text-muted-foreground">Nacimiento</Label>
+                    <p className="font-medium text-foreground">{selectedPatient.birthDate} ({calculateAge(selectedPatient.birthDate)} años)</p>
                   </div>
                   <div className="md:col-span-2">
-                    <Label className="text-gray-500">Contacto</Label>
+                    <Label className="text-muted-foreground">Contacto</Label>
                     <div className="flex items-center gap-6 mt-1">
                       <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium text-gray-800">{selectedPatient.email}</span>
+                        <Mail className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium text-foreground">{selectedPatient.email}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Phone className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium text-gray-800">{selectedPatient.phone}</span>
+                        <Phone className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium text-foreground">{selectedPatient.phone}</span>
                       </div>
                     </div>
                   </div>
                   <div className="md:col-span-3">
-                    <Label className="text-gray-500">Dirección</Label>
-                    <p className="font-medium text-gray-800">{selectedPatient.address}</p>
+                    <Label className="text-muted-foreground">Dirección</Label>
+                    <p className="font-medium text-foreground">{selectedPatient.address}</p>
                   </div>
                 </div>
               </CardContent>
@@ -256,12 +257,12 @@ export default function NewSessionPage() {
               <CardDescription>Graba la sesión para transcripción y análisis con IA</CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <div className={`w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center ${isRecording ? "bg-red-100 animate-pulse" : "bg-gray-100"}`}>
-                <Mic className={`h-8 w-8 ${isRecording ? "text-red-600" : "text-gray-400"}`} />
+              <div className={`w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center ${isRecording ? "bg-red-100 dark:bg-red-900/20" : "bg-muted"}`}>
+                <Mic className={`h-8 w-8 ${isRecording ? "text-red-600 dark:text-red-400" : "text-muted-foreground"}`} />
               </div>
-              {isRecording && <div className="text-2xl font-mono text-red-600 mb-4">{new Date(recordingTime * 1000).toISOString().substr(14, 5)}</div>}
+              {isRecording && <div className="text-2xl font-mono text-red-600 dark:text-red-400 mb-4">{new Date(recordingTime * 1000).toISOString().substr(14, 5)}</div>}
               <div className="flex gap-4 justify-center">
-                <Button type="button" onClick={() => setIsRecording(prev => !prev)} variant={isRecording ? "destructive" : "default"}>
+                <Button type="button" onClick={() => setIsRecording(prev => !prev)} variant={isRecording ? "destructive" : "secondary"}>
                   {isRecording ? <><Pause className="h-4 w-4 mr-2" />Detener</> : <><Mic className="h-4 w-4 mr-2" />Iniciar Grabación</>}
                 </Button>
                 <Button type="button" variant="outline"><Upload className="h-4 w-4 mr-2" />Subir Audio</Button>
@@ -310,14 +311,13 @@ export default function NewSessionPage() {
           </Card>
 
           {!isFormValid && (
-            <Card className="border-orange-200 bg-orange-50">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-2 text-orange-700">
-                  <AlertCircle className="h-4 w-4" />
-                  <span className="text-sm">Debes completar el registro clínico para poder guardar.</span>
-                </div>
-              </CardContent>
-            </Card>
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Campos Incompletos</AlertTitle>
+              <AlertDescription>
+                Debes seleccionar un paciente y completar el registro clínico para poder guardar.
+              </AlertDescription>
+            </Alert>
           )}
 
           <div className="flex justify-end gap-4">
