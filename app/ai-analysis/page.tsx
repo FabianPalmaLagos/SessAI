@@ -11,7 +11,6 @@ import { Brain, FileText, Download, Sparkles, TrendingUp, AlertCircle } from "lu
 import Link from "next/link"
 
 export default function AIAnalysisPage() {
-  const [selectedPeriod, setSelectedPeriod] = useState("")
   const [selectedPatient, setSelectedPatient] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedReport, setGeneratedReport] = useState("")

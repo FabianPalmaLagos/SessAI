@@ -7,7 +7,7 @@ import { Navigation } from "@/components/navigation"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "TheraMind - Gestión Terapéutica con IA",
+  title: "SessAI - Gestión Terapéutica con IA",
   description: "Potenciamos el arte de la terapia con la precisión de la inteligencia artificial",
     generator: 'v0.dev'
 }

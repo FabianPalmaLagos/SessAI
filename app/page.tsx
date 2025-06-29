@@ -9,7 +9,7 @@ export default function Dashboard() {
       <div className="container mx-auto p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">TheraMind</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">SessAI</h1>
           <p className="text-lg text-gray-600">
             Potenciando el arte de la terapia con la precisión de la inteligencia artificial
           </p>
@@ -145,7 +145,7 @@ export default function Dashboard() {
                 <Brain className="h-5 w-5" />
                 Demo IA en Vivo
               </CardTitle>
-              <CardDescription>Prueba las capacidades de IA de TheraMind</CardDescription>
+              <CardDescription>Prueba las capacidades de IA de SessAI</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/ai-demo">

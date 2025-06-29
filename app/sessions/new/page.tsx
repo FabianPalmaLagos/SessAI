@@ -1,0 +1,260 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { ArrowLeft, Mic, Upload, Pause, Brain, User, Save, AlertCircle, FileText, Mail, Phone } from "lucide-react"
+import Link from "next/link"
+
+// Mock data para pacientes (igual que en la ficha del paciente)
+const mockPatients = [
+  {
+    id: 1,
+    name: "María González",
+    rut: "12.345.678-9",
+    email: "maria.gonzalez@email.com",
+    phone: "+56 9 8765 4321",
+    status: "Activo",
+    totalSessions: 12,
+    birthDate: "1985-03-15",
+    address: "Av. Providencia 1234, Santiago",
+  },
+  {
+    id: 2,
+    name: "Carlos Rodríguez",
+    rut: "98.765.432-1",
+    email: "carlos.rodriguez@email.com",
+    phone: "+56 9 1234 5678",
+    status: "Activo",
+    totalSessions: 8,
+    birthDate: "1990-07-22",
+    address: "Los Leones 987, Providencia",
+  },
+]
+
+interface SessionFormData {
+  patientId: string
+  sessionDate: string
+  sessionTime: string
+  sessionContent: string
+}
+
+export default function NewSessionPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const patientIdParam = searchParams.get('patientId')
+
+  const [selectedPatient, setSelectedPatient] = useState<typeof mockPatients[0] | null>(null)
+  const [isRecording, setIsRecording] = useState(false)
+  const [recordingTime, setRecordingTime] = useState(0)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+
+  const [formData, setFormData] = useState<SessionFormData>({
+    patientId: patientIdParam || "",
+    sessionDate: new Date().toISOString().split('T')[0],
+    sessionTime: new Date().toTimeString().slice(0, 5),
+    sessionContent: ""
+  })
+
+  useEffect(() => {
+    if (patientIdParam) {
+      const patient = mockPatients.find(p => p.id === parseInt(patientIdParam))
+      if (patient) {
+        setSelectedPatient(patient)
+        setFormData(prev => ({ ...prev, patientId: patientIdParam }))
+      }
+    }
+  }, [patientIdParam])
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setTimeout>
+    if (isRecording) {
+      interval = setInterval(() => setRecordingTime(prev => prev + 1), 1000)
+    }
+    return () => clearInterval(interval)
+  }, [isRecording])
+
+  const calculateAge = (birthDate: string) => {
+    if (!birthDate) return ''
+    const today = new Date()
+    const birth = new Date(birthDate)
+    let age = today.getFullYear() - birth.getFullYear()
+    const monthDiff = today.getMonth() - birth.getMonth()
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--
+    }
+    return age
+  }
+
+  const handleInputChange = <K extends keyof SessionFormData>(field: K, value: SessionFormData[K]) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setTimeout(() => {
+      console.log("Datos de la sesión:", formData)
+      setIsSubmitting(false)
+      setShowSuccess(true)
+      setTimeout(() => router.push(`/patients/${formData.patientId}`), 2000)
+    }, 1500)
+  }
+
+  const isFormValid = formData.patientId && formData.sessionContent.trim() !== ""
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto p-6">
+        <div className="flex items-center gap-4 mb-6">
+          <Button variant="outline" size="sm" onClick={() => router.back()}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Nueva Sesión Terapéutica</h1>
+            <p className="text-gray-600">Registra una nueva sesión con grabación y transcripción automática</p>
+          </div>
+        </div>
+
+        {showSuccess && (
+          <Card className="border-green-200 bg-green-50 mb-6">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-2 text-green-700">
+                <Save className="h-4 w-4" />
+                <span className="font-medium">¡Sesión guardada exitosamente!</span>
+              </div>
+              <p className="text-sm text-green-600 mt-1">Redirigiendo a la ficha del paciente...</p>
+            </CardContent>
+          </Card>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {selectedPatient && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><User className="h-5 w-5 text-blue-600" />Resumen del Paciente</CardTitle>
+                <CardDescription>Información del paciente seleccionado para esta sesión.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4 text-sm">
+                  <div>
+                    <Label className="text-gray-500">Nombre</Label>
+                    <p className="font-medium text-gray-800">{selectedPatient.name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">RUT</Label>
+                    <p className="font-medium text-gray-800">{selectedPatient.rut}</p>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Nacimiento</Label>
+                    <p className="font-medium text-gray-800">{selectedPatient.birthDate} ({calculateAge(selectedPatient.birthDate)} años)</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-gray-500">Contacto</Label>
+                    <div className="flex items-center gap-6 mt-1">
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-gray-400" />
+                        <span className="font-medium text-gray-800">{selectedPatient.email}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4 text-gray-400" />
+                        <span className="font-medium text-gray-800">{selectedPatient.phone}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="md:col-span-3">
+                    <Label className="text-gray-500">Dirección</Label>
+                    <p className="font-medium text-gray-800">{selectedPatient.address}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-purple-600" />Detalles de la Sesión</CardTitle>
+              <CardDescription>Configura los parámetros básicos de la sesión</CardDescription>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="sessionDate">Fecha *</Label>
+                <Input id="sessionDate" type="date" value={formData.sessionDate} onChange={e => handleInputChange('sessionDate', e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="sessionTime">Hora *</Label>
+                <Input id="sessionTime" type="time" value={formData.sessionTime} onChange={e => handleInputChange('sessionTime', e.target.value)} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><Mic className="h-5 w-5 text-red-600" />Grabación de Audio (Opcional)</CardTitle>
+              <CardDescription>Graba la sesión para transcripción y análisis con IA</CardDescription>
+            </CardHeader>
+            <CardContent className="text-center">
+              <div className={`w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center ${isRecording ? "bg-red-100 animate-pulse" : "bg-gray-100"}`}>
+                <Mic className={`h-8 w-8 ${isRecording ? "text-red-600" : "text-gray-400"}`} />
+              </div>
+              {isRecording && <div className="text-2xl font-mono text-red-600 mb-4">{new Date(recordingTime * 1000).toISOString().substr(14, 5)}</div>}
+              <div className="flex gap-4 justify-center">
+                <Button type="button" onClick={() => setIsRecording(prev => !prev)} variant={isRecording ? "destructive" : "default"}>
+                  {isRecording ? <><Pause className="h-4 w-4 mr-2" />Detener</> : <><Mic className="h-4 w-4 mr-2" />Iniciar Grabación</>}
+                </Button>
+                <Button type="button" variant="outline"><Upload className="h-4 w-4 mr-2" />Subir Audio</Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><Brain className="h-5 w-5 text-green-600" />Contenido de la Sesión</CardTitle>
+              <CardDescription>Registra los aspectos clínicos y terapéuticos de la sesión</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <Label htmlFor="sessionContent">Registro Clínico *</Label>
+                <Textarea
+                  id="sessionContent"
+                  placeholder="Escribe aquí las notas de la sesión, temas tratados, técnicas utilizadas, etc."
+                  value={formData.sessionContent}
+                  onChange={e => handleInputChange('sessionContent', e.target.value)}
+                  rows={12}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {!isFormValid && (
+            <Card className="border-orange-200 bg-orange-50">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-2 text-orange-700">
+                  <AlertCircle className="h-4 w-4" />
+                  <span className="text-sm">Debes completar el registro clínico para poder guardar.</span>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <div className="flex justify-end gap-4">
+            <Button type="button" variant="outline" onClick={() => router.back()}>Cancelar</Button>
+            <Button type="submit" disabled={!isFormValid || isSubmitting}>
+              {isSubmitting ? (
+                <><div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2" />Guardando...</>
+              ) : (
+                <><Save className="h-4 w-4 mr-2" />Guardar Sesión</>
+              )}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+} 

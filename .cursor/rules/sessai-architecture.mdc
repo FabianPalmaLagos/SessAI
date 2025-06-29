@@ -6,7 +6,7 @@ alwaysApply: true
 # SessAI - Arquitectura y Estructura del Proyecto
 
 ## Descripción General
-SessAI (TheraMind) es una aplicación de gestión terapéutica que utiliza inteligencia artificial para potenciar el trabajo de terapeutas y psicólogos.
+SessAI es una aplicación de gestión terapéutica que utiliza inteligencia artificial para potenciar el trabajo de terapeutas y psicólogos.
 
 ## Stack Tecnológico
 - **Framework**: Next.js 15.2.4 con App Router
@@ -36,7 +36,7 @@ SessAI (TheraMind) es una aplicación de gestión terapéutica que utiliza intel
 ## Estructura de Directorios
 
 ### Páginas Principales
-- [app/page.tsx](mdc:app/page.tsx) - Dashboard principal (TheraMind)
+- [app/page.tsx](mdc:app/page.tsx) - Dashboard principal (SessAI)
 - [app/patients/page.tsx](mdc:app/patients/page.tsx) - Gestión de pacientes
 - [app/patients/new/page.tsx](mdc:app/patients/new/page.tsx) - Registro de nuevos pacientes
 - [app/sessions/page.tsx](mdc:app/sessions/page.tsx) - Registro de sesiones

@@ -9,7 +9,7 @@ export function Navigation() {
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <Brain className="h-8 w-8 text-purple-600" />
-            <span className="text-2xl font-bold text-gray-900">TheraMind</span>
+            <span className="text-2xl font-bold text-gray-900">SessAI</span>
           </Link>
 
           <div className="hidden md:flex items-center space-x-4">
@@ -17,12 +17,6 @@ export function Navigation() {
               <Button variant="ghost" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 Pacientes
-              </Button>
-            </Link>
-            <Link href="/sessions">
-              <Button variant="ghost" className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                Sesiones
               </Button>
             </Link>
             <Link href="/ai-analysis">

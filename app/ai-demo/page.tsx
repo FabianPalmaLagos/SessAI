@@ -94,7 +94,7 @@ Basado en el patrón actual, se estima que la paciente alcanzará los objetivos 
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
             <Brain className="h-10 w-10 text-purple-600" />
-            Demo IA de TheraMind
+            Demo IA de SessAI
           </h1>
           <p className="text-lg text-gray-600">Experimenta el poder de la inteligencia artificial en terapia</p>
         </div>
@@ -226,9 +226,9 @@ Basado en el patrón actual, se estima que la paciente alcanzará los objetivos 
 
         {/* Features Highlight */}
         <Card className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50">
-          <CardHeader>
-            <CardTitle className="text-center">¿Por qué TheraMind es Revolucionario?</CardTitle>
-          </CardHeader>
+                        <CardHeader>
+                <CardTitle className="text-center">¿Por qué SessAI es Revolucionario?</CardTitle>
+              </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div>
