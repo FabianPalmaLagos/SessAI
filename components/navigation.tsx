@@ -36,7 +36,7 @@ export function Navigation() {
             <Link href="/calendar">
               <Button variant="ghost" className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                Agenda
+                Calendario
               </Button>
             </Link>
             <Link href="/reports">
