@@ -1,176 +1,361 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+"use client"
+
+import { useState } from "react"
+import {
+  Users,
+  Calendar,
+  FileText,
+  Clock,
+  Brain,
+  Settings,
+  TrendingUp,
+  Activity,
+  Zap,
+  ChevronRight,
+  BarChart3,
+  UserPlus,
+  CalendarPlus,
+  FileBarChart,
+  Play,
+  Search,
+} from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, Calendar, FileText, Brain, Settings, Clock } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 import Link from "next/link"
 
 export default function Dashboard() {
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const metrics = [
+    {
+      title: "Pacientes Activos",
+      value: "24",
+      change: "+3 desde el mes pasado",
+      icon: Users,
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+      trend: "up",
+    },
+    {
+      title: "Sesiones Esta Semana",
+      value: "18",
+      change: "+12% vs semana anterior",
+      icon: Calendar,
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+      trend: "up",
+    },
+    {
+      title: "Informes Generados",
+      value: "7",
+      change: "Este mes",
+      icon: FileText,
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+      trend: "neutral",
+    },
+    {
+      title: "Tiempo Ahorrado",
+      value: "12h",
+      change: "Con IA esta semana",
+      icon: Clock,
+      color: "text-orange-600",
+      bgColor: "bg-orange-50",
+      trend: "up",
+    },
+  ]
+
+  const modules = [
+    {
+      title: "Gestión de Pacientes",
+      description: "Administra fichas, historiales y búsqueda avanzada",
+      icon: Users,
+      color: "bg-gradient-to-br from-blue-500 to-blue-600",
+      hoverColor: "hover:from-blue-600 hover:to-blue-700",
+      stats: "24 activos",
+      href: "/patients",
+    },
+    {
+      title: "Registro de Sesiones",
+      description: "Grabación, transcripción y registro multimodal",
+      icon: Activity,
+      color: "bg-gradient-to-br from-green-500 to-green-600",
+      hoverColor: "hover:from-green-600 hover:to-green-700",
+      stats: "18 esta semana",
+      href: "/sessions",
+    },
+    {
+      title: "Análisis con IA",
+      description: "Informes automáticos y asistente de documentación",
+      icon: Brain,
+      color: "bg-gradient-to-br from-purple-500 to-purple-600",
+      hoverColor: "hover:from-purple-600 hover:to-purple-700",
+      stats: "7 informes",
+      href: "/ai-analysis",
+      featured: true,
+    },
+    {
+      title: "Agenda y Citas",
+      description: "Calendario integrado y gestión de citas",
+      icon: Calendar,
+      color: "bg-gradient-to-br from-orange-500 to-orange-600",
+      hoverColor: "hover:from-orange-600 hover:to-orange-700",
+      stats: "5 próximas",
+      href: "/calendar",
+    },
+    {
+      title: "Centro de Control",
+      description: "Configuración avanzada de la plataforma",
+      icon: Settings,
+      color: "bg-gradient-to-br from-gray-500 to-gray-600",
+      hoverColor: "hover:from-gray-600 hover:to-gray-700",
+      stats: "Configurar",
+      href: "/admin",
+    },
+    {
+      title: "Analytics & Reportes",
+      description: "Métricas de progreso y análisis de tendencias",
+      icon: BarChart3,
+      color: "bg-gradient-to-br from-indigo-500 to-indigo-600",
+      hoverColor: "hover:from-indigo-600 hover:to-indigo-700",
+      stats: "Ver métricas",
+      href: "/analytics",
+    },
+  ]
+
+  const quickActions = [
+    {
+      title: "Nuevo Paciente",
+      description: "Registrar un nuevo paciente",
+      icon: UserPlus,
+      color: "bg-blue-500 hover:bg-blue-600",
+      href: "/patients/new",
+    },
+    {
+      title: "Nueva Sesión",
+      description: "Iniciar sesión terapéutica",
+      icon: CalendarPlus,
+      color: "bg-green-500 hover:bg-green-600",
+      href: "/sessions/new",
+    },
+    {
+      title: "Generar Informe IA",
+      description: "Crear informe con IA",
+      icon: FileBarChart,
+      color: "bg-purple-500 hover:bg-purple-600",
+      href: "/ai-analysis",
+    },
+    {
+      title: "Demo IA en Vivo",
+      description: "Probar capacidades de IA",
+      icon: Play,
+      color: "bg-orange-500 hover:bg-orange-600",
+      href: "/ai-demo",
+    },
+  ]
+
+  const recentActivity = [
+    {
+      patient: "María González",
+      action: "Sesión completada",
+      time: "Hace 2 horas",
+      type: "session",
+    },
+    {
+      patient: "Carlos Ruiz",
+      action: "Informe IA generado",
+      time: "Hace 4 horas",
+      type: "report",
+    },
+    {
+      patient: "Ana López",
+      action: "Cita programada",
+      time: "Hace 1 día",
+      type: "appointment",
+    },
+  ]
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-6">
-        {/* Header */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">SessAI</h1>
-          <p className="text-lg text-muted-foreground">
-            Potenciando el arte de la terapia con la precisión de la inteligencia artificial
-          </p>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pacientes Activos</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">24</div>
-              <p className="text-xs text-muted-foreground">+2 desde el mes pasado</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Sesiones Esta Semana</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">18</div>
-              <p className="text-xs text-muted-foreground">+12% vs semana anterior</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Informes Generados</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">7</div>
-              <p className="text-xs text-muted-foreground">Este mes</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Tiempo Ahorrado</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">12h</div>
-              <p className="text-xs text-muted-foreground">Con IA esta semana</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Modules */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-primary" />
-                Gestión de Pacientes
-              </CardTitle>
-              <CardDescription>Administra fichas, historiales y búsqueda avanzada de pacientes</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/patients">
-                <Button className="w-full">Acceder al Módulo</Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-primary" />
-                Registro de Sesiones
-              </CardTitle>
-              <CardDescription>Grabación, transcripción automática y registro multimodal</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/sessions">
-                <Button className="w-full">Acceder al Módulo</Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Brain className="h-5 w-5 text-primary" />
-                Análisis con IA
-              </CardTitle>
-              <CardDescription>Generación de informes y asistente de documentación inteligente</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/ai-analysis">
-                <Button className="w-full">Acceder al Módulo</Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-primary" />
-                Agenda y Citas
-              </CardTitle>
-              <CardDescription>Calendario integrado y gestión de citas</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/calendar">
-                <Button className="w-full">Acceder al Módulo</Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow border-2 border-orange-200 bg-orange-50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-orange-700">
-                <Settings className="h-5 w-5" />
-                Centro de Control
-              </CardTitle>
-              <CardDescription>Administración de la plataforma y configuración avanzada</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/admin">
-                <Button className="w-full" variant="secondary">Acceder al Centro</Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow border-2 border-primary/20 bg-primary/5">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-primary">
-                <Brain className="h-5 w-5" />
-                Demo IA en Vivo
-              </CardTitle>
-              <CardDescription>Prueba las capacidades de IA de SessAI</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/ai-demo">
-                <Button className="w-full" variant="secondary">Probar IA</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="mt-8">
-          <h2 className="text-2xl font-semibold mb-4 text-foreground">Acciones Rápidas</h2>
-          <div className="flex flex-wrap gap-4">
-            <Link href="/patients/new">
-              <Button variant="outline">+ Nuevo Paciente</Button>
-            </Link>
-            <Link href="/sessions/new">
-              <Button variant="outline">+ Nueva Sesión</Button>
-            </Link>
-            <Link href="/ai-analysis/generate-report">
-              <Button variant="outline">+ Generar Informe IA</Button>
-            </Link>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900 mb-2">Bienvenido de vuelta, Dr. Rodriguez</h1>
+              <p className="text-slate-600 text-lg">
+                Potenciando el arte de la terapia con la precisión de la inteligencia artificial
+              </p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="Buscar pacientes, sesiones..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 w-64"
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+
+        {/* Metrics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {metrics.map((metric, index) => (
+            <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-200">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-slate-600 mb-1">{metric.title}</p>
+                    <p className="text-3xl font-bold text-slate-900">{metric.value}</p>
+                    <p className="text-sm text-slate-500 mt-1">{metric.change}</p>
+                  </div>
+                  <div className={`p-3 rounded-full ${metric.bgColor}`}>
+                    <metric.icon className={`w-6 h-6 ${metric.color}`} />
+                  </div>
+                </div>
+                {metric.trend === "up" && (
+                  <div className="absolute top-4 right-4">
+                    <TrendingUp className="w-4 h-4 text-green-500" />
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Modules */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-slate-900">Módulos Principales</h2>
+              <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                <Zap className="w-3 h-3 mr-1" />
+                IA Activada
+              </Badge>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {modules.map((module, index) => (
+                <Link key={index} href={module.href}>
+                  <Card
+                    className={`group cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1 ${
+                      module.featured ? "ring-2 ring-purple-200" : ""
+                    }`}
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div
+                          className={`p-3 rounded-xl ${module.color} ${module.hoverColor} transition-colors duration-200`}
+                        >
+                          <module.icon className="w-6 h-6 text-white" />
+                        </div>
+                        {module.featured && (
+                          <Badge className="bg-purple-500 hover:bg-purple-600">
+                            <Zap className="w-3 h-3 mr-1" />
+                            IA
+                          </Badge>
+                        )}
+                      </div>
+
+                      <h3 className="text-lg font-semibold text-slate-900 mb-2 group-hover:text-slate-700 transition-colors">
+                        {module.title}
+                      </h3>
+                      <p className="text-slate-600 text-sm mb-4 leading-relaxed">{module.description}</p>
+
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-slate-500">{module.stats}</span>
+                        <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600 group-hover:translate-x-1 transition-all duration-200" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Zap className="w-5 h-5 text-purple-600" />
+                  <span>Acciones Rápidas</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {quickActions.map((action, index) => (
+                  <Link key={index} href={action.href}>
+                    <Button variant="ghost" className="w-full justify-start h-auto p-3 hover:bg-slate-50">
+                      <div className={`p-2 rounded-lg ${action.color} mr-3`}>
+                        <action.icon className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <div className="font-medium text-slate-900">{action.title}</div>
+                        <div className="text-xs text-slate-500">{action.description}</div>
+                      </div>
+                    </Button>
+                  </Link>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Activity className="w-5 h-5 text-green-600" />
+                  <span>Actividad Reciente</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {recentActivity.map((activity, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <div
+                      className={`w-2 h-2 rounded-full mt-2 ${
+                        activity.type === "session"
+                          ? "bg-green-500"
+                          : activity.type === "report"
+                            ? "bg-purple-500"
+                            : "bg-blue-500"
+                      }`}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-slate-900">{activity.patient}</p>
+                      <p className="text-sm text-slate-600">{activity.action}</p>
+                      <p className="text-xs text-slate-400">{activity.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* AI Demo Card */}
+            <Card className="bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Brain className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="font-semibold text-slate-900 mb-2">Demo IA en Vivo</h3>
+                <p className="text-sm text-slate-600 mb-4">
+                  Experimenta las capacidades de IA de SessAI en tiempo real
+                </p>
+                <Link href="/ai-demo">
+                  <Button className="w-full bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700">
+                    <Play className="w-4 h-4 mr-2" />
+                    Probar Ahora
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </main>
     </div>
   )
 }
