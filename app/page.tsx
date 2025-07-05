@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, Calendar, FileText, Brain, TrendingUp, Clock } from "lucide-react"
+import { Users, Calendar, FileText, Brain, Settings, Clock } from "lucide-react"
 import Link from "next/link"
 
 export default function Dashboard() {
@@ -124,17 +124,17 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow border-2 border-orange-200 bg-orange-50">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
-                Reportes y Analytics
+              <CardTitle className="flex items-center gap-2 text-orange-700">
+                <Settings className="h-5 w-5" />
+                Centro de Control
               </CardTitle>
-              <CardDescription>Análisis de tendencias y métricas de progreso</CardDescription>
+              <CardDescription>Administración de la plataforma y configuración avanzada</CardDescription>
             </CardHeader>
             <CardContent>
-              <Link href="/reports">
-                <Button className="w-full">Acceder al Módulo</Button>
+              <Link href="/admin">
+                <Button className="w-full" variant="secondary">Acceder al Centro</Button>
               </Link>
             </CardContent>
           </Card>

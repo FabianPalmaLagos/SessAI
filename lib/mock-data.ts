@@ -1,12 +1,14 @@
 import { Therapist } from '@/types/therapist';
 import { Session } from '@/types/session'; // Assuming session type exists as per rules
 import { Patient } from '@/types/patient'; // Assuming patient type exists as per rules
-import { addDays, addHours, format } from 'date-fns';
+import { addDays, format, parseISO } from 'date-fns';
 
 export const mockTherapists: Therapist[] = [
   { id: '1', name: 'Dr. Ana Silva', email: 'ana.silva@example.com', color: '#3174ad' },
   { id: '2', name: 'Dr. Carlos Rojas', email: 'carlos.rojas@example.com', color: '#4caf50' },
   { id: '3', name: 'Dra. Lucia Gomez', email: 'lucia.gomez@example.com', color: '#f44336' },
+  { id: '4', name: 'Dr. Miguel Torres', email: 'miguel.torres@example.com', color: '#9c27b0' },
+  { id: '5', name: 'Dra. Carmen Vega', email: 'carmen.vega@example.com', color: '#ff9800' },
 ];
 
 export const mockPatients: Patient[] = [
@@ -42,6 +44,22 @@ export const mockPatients: Patient[] = [
     updatedAt: new Date().toISOString(),
     totalSessions: 8,
   },
+  {
+    id: 'p5',
+    name: 'Andrea Morales',
+    status: 'active',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    totalSessions: 3,
+  },
+  {
+    id: 'p6',
+    name: 'Roberto Silva',
+    status: 'active',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    totalSessions: 6,
+  },
 ];
 
 
@@ -72,7 +90,7 @@ export const mockSessions: Session[] = [
     endTime: '12:00',
     duration: 60,
     type: 'presencial',
-    status: 'scheduled',
+    status: 'completed',
     notes: 'Seguimiento de progreso.',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -118,6 +136,77 @@ export const mockSessions: Session[] = [
     type: 'telefonica',
     status: 'scheduled',
     notes: 'Check-in rápido.',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  // Sesiones adicionales para demostrar filtros
+  {
+    id: 's6',
+    patientId: 'p5',
+    therapistId: '4',
+    date: format(today, 'yyyy-MM-dd'),
+    startTime: '15:00',
+    endTime: '16:00',
+    duration: 60,
+    type: 'presencial',
+    status: 'cancelled',
+    notes: 'Cancelada por el paciente.',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 's7',
+    patientId: 'p6',
+    therapistId: '5',
+    date: format(addDays(today, -1), 'yyyy-MM-dd'),
+    startTime: '13:00',
+    endTime: '14:00',
+    duration: 60,
+    type: 'virtual',
+    status: 'no-show',
+    notes: 'El paciente no se presentó.',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 's8',
+    patientId: 'p2',
+    therapistId: '4',
+    date: format(today, 'yyyy-MM-dd'),
+    startTime: '08:00',
+    endTime: '09:00',
+    duration: 60,
+    type: 'presencial',
+    status: 'completed',
+    notes: 'Sesión de seguimiento exitosa.',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 's9',
+    patientId: 'p3',
+    therapistId: '5',
+    date: format(addDays(today, 1), 'yyyy-MM-dd'),
+    startTime: '10:00',
+    endTime: '11:00',
+    duration: 60,
+    type: 'telefonica',
+    status: 'scheduled',
+    notes: 'Consulta telefónica programada.',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 's10',
+    patientId: 'p4',
+    therapistId: '1',
+    date: format(addDays(today, -2), 'yyyy-MM-dd'),
+    startTime: '14:00',
+    endTime: '15:00',
+    duration: 60,
+    type: 'virtual',
+    status: 'completed',
+    notes: 'Revisión de objetivos terapéuticos.',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },

@@ -4,9 +4,7 @@ import Link from "next/link"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Brain, Users, FileText, Calendar, BarChart3, Settings, Sun, Moon } from "lucide-react"
+import { Brain, Users, Calendar, Settings, Sun, Moon } from "lucide-react"
 
 export function Navigation() {
   const { setTheme, resolvedTheme } = useTheme()
@@ -39,10 +37,10 @@ export function Navigation() {
                 Calendario
               </Button>
             </Link>
-            <Link href="/reports">
+            <Link href="/admin">
               <Button variant="ghost" className="flex items-center gap-2">
-                <BarChart3 className="h-4 w-4" />
-                Reportes
+                <Settings className="h-4 w-4" />
+                Centro de Control
               </Button>
             </Link>
           </div>

@@ -5,14 +5,14 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { ArrowLeft, Mic, Upload, Pause, Brain, User, Save, AlertCircle, FileText, Mail, Phone, Sparkles, Undo2 } from "lucide-react"
-import Link from "next/link"
+
 
 // Mock data para pacientes (igual que en la ficha del paciente)
 const mockPatients = [

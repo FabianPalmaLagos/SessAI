@@ -49,12 +49,11 @@ export default function SessionsPage() {
               <User className="h-4 w-4" />
               <span className="font-medium">¿Cómo crear una nueva sesión?</span>
             </div>
-            <p className="text-sm text-blue-600">
-              Para registrar una nueva sesión, ve a la ficha del paciente y haz clic en "Nueva Sesión". 
-              Esto asegura que la sesión esté correctamente vinculada al paciente.
-                    </p>
-                </CardContent>
-              </Card>
+            <p className="text-sm text-gray-600">
+              No hay sesiones registradas. Haz clic en &quot;Nueva Sesión&quot; para comenzar.
+            </p>
+          </CardContent>
+        </Card>
 
         <div className="space-y-6">
             <div className="space-y-4">
