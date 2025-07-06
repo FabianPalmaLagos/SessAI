@@ -6,7 +6,7 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
-import { Users, Calendar, Settings, Sun, Moon, Menu, BotMessageSquare } from "lucide-react"
+import { Users, Calendar, Settings, Sun, Moon, Menu, BotMessageSquare, ClipboardList } from "lucide-react"
 
 export function Navigation() {
   const { setTheme, resolvedTheme } = useTheme()
@@ -42,10 +42,10 @@ export function Navigation() {
                     </Link>
                   </SheetClose>
                   <SheetClose asChild>
-                    <Link href="/sessions" passHref>
+                    <Link href="/sessions/new" passHref>
                       <Button variant="ghost" className="w-full flex items-center gap-3 justify-start text-base">
-                        <Calendar className="h-5 w-5" />
-                        Sesiones
+                        <ClipboardList className="h-5 w-5" />
+                        Sesiónes
                       </Button>
                     </Link>
                   </SheetClose>
@@ -89,10 +89,10 @@ export function Navigation() {
                 Pacientes
               </Button>
             </Link>
-            <Link href="/sessions">
+            <Link href="/sessions/new">
               <Button variant="ghost" className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                Sesiones
+                <ClipboardList className="h-4 w-4" />
+                Nueva Sesión
               </Button>
             </Link>
             <Link href="/calendar">

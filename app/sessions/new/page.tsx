@@ -1,20 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
-import { ArrowLeft, Mic, Upload, Pause, Brain, User, Save, AlertCircle, FileText, Mail, Phone, Sparkles, Undo2 } from "lucide-react"
+import { ArrowLeft, Mic, Upload, Pause, Brain, User, Save, AlertCircle, FileText, Mail, Phone, Sparkles, Undo2, Search } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-
-// Mock data para pacientes (igual que en la ficha del paciente)
+// Mock data para pacientes
 const mockPatients = [
   {
     id: 1,
@@ -22,7 +20,7 @@ const mockPatients = [
     rut: "12.345.678-9",
     email: "maria.gonzalez@email.com",
     phone: "+56 9 8765 4321",
-    status: "Activo",
+    status: "Activo" as const,
     totalSessions: 12,
     birthDate: "1985-03-15",
     address: "Av. Providencia 1234, Santiago",
@@ -33,12 +31,35 @@ const mockPatients = [
     rut: "98.765.432-1",
     email: "carlos.rodriguez@email.com",
     phone: "+56 9 1234 5678",
-    status: "Activo",
+    status: "Activo" as const,
     totalSessions: 8,
     birthDate: "1990-07-22",
     address: "Los Leones 987, Providencia",
   },
+  {
+    id: 3,
+    name: "Ana López",
+    rut: "15.987.654-3",
+    email: "ana.lopez@email.com",
+    phone: "+56 9 5555 4444",
+    status: "Inactivo" as const,
+    totalSessions: 25,
+    birthDate: "1992-11-30",
+    address: "Calle Falsa 123, Ñuñoa",
+  },
 ]
+
+interface Patient {
+  id: number;
+  name: string;
+  rut?: string;
+  email?: string;
+  phone?: string;
+  status: 'Activo' | 'Inactivo';
+  totalSessions: number;
+  birthDate?: string;
+  address?: string;
+}
 
 interface SessionFormData {
   patientId: string
@@ -50,9 +71,16 @@ interface SessionFormData {
 export default function NewSessionPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const patientIdParam = searchParams.get('patientId')
 
-  const [selectedPatient, setSelectedPatient] = useState<typeof mockPatients[0] | null>(null)
+  const initialPatientId = searchParams.get('patientId')
+  const initialPatient = initialPatientId
+    ? mockPatients.find(p => p.id === parseInt(initialPatientId, 10)) || null
+    : null;
+
+  const [patients] = useState<Patient[]>(mockPatients)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(initialPatient)
+  
   const [isRecording, setIsRecording] = useState(false)
   const [recordingTime, setRecordingTime] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -65,21 +93,39 @@ export default function NewSessionPage() {
   const [contentWasReplaced, setContentWasReplaced] = useState(false)
 
   const [formData, setFormData] = useState<SessionFormData>({
-    patientId: patientIdParam || "",
+    patientId: initialPatientId || "",
     sessionDate: new Date().toISOString().split('T')[0],
     sessionTime: new Date().toTimeString().slice(0, 5),
     sessionContent: ""
   })
-
-  useEffect(() => {
-    if (patientIdParam) {
-      const patient = mockPatients.find(p => p.id === parseInt(patientIdParam))
-      if (patient) {
-        setSelectedPatient(patient)
-        setFormData(prev => ({ ...prev, patientId: patientIdParam }))
-      }
+  
+  const filteredPatients = useMemo(() => {
+    const lowercasedSearchTerm = searchTerm.toLowerCase();
+    if (!lowercasedSearchTerm) {
+      return patients;
     }
-  }, [patientIdParam])
+    return patients.filter(patient => {
+      const nameMatch = patient.name.toLowerCase().includes(lowercasedSearchTerm);
+      const rutMatch = !!patient.rut && patient.rut.toLowerCase().includes(lowercasedSearchTerm);
+      return nameMatch || rutMatch;
+    });
+  }, [searchTerm, patients])
+
+  const handleSelectPatient = (patient: Patient) => {
+    setSelectedPatient(patient)
+    setFormData(prev => ({ ...prev, patientId: patient.id.toString() }))
+    router.push(`/sessions/new?patientId=${patient.id}`, { scroll: false });
+  }
+
+  const handleDeselectPatient = () => {
+    setSelectedPatient(null)
+    setFormData(prev => ({ 
+      ...prev, 
+      patientId: "", 
+      sessionContent: "" 
+    }))
+    router.push('/sessions/new', { scroll: false });
+  }
 
   useEffect(() => {
     let interval: ReturnType<typeof setTimeout>
@@ -169,13 +215,15 @@ export default function NewSessionPage() {
     <div className="min-h-screen">
       <div className="container mx-auto p-6">
         <div className="flex items-center gap-4 mb-6">
-          <Button variant="outline" size="sm" onClick={() => router.back()}>
+          <Button variant="outline" size="sm" onClick={() => selectedPatient ? handleDeselectPatient() : router.back()}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Volver
+            {selectedPatient ? "Cambiar Paciente" : "Volver"}
           </Button>
           <div>
             <h1 className="text-3xl font-bold text-foreground">Nueva Sesión Terapéutica</h1>
-            <p className="text-muted-foreground">Registra una nueva sesión con grabación y transcripción automática</p>
+            <p className="text-muted-foreground">
+              {selectedPatient ? `Registrando sesión para ${selectedPatient.name}` : "Busca y selecciona un paciente para comenzar"}
+            </p>
           </div>
         </div>
 
@@ -191,8 +239,45 @@ export default function NewSessionPage() {
           </Card>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {selectedPatient && (
+        {!selectedPatient ? (
+          <>
+            <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Buscar por nombre o RUT del paciente..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <div className="border rounded-lg">
+              <div className="max-h-[60vh] overflow-y-auto">
+                {filteredPatients.map((patient, index) => (
+                  <div 
+                    key={patient.id} 
+                    onClick={() => handleSelectPatient(patient)}
+                    className={`p-4 cursor-pointer hover:bg-muted flex justify-between items-center ${index > 0 ? 'border-t' : ''}`}
+                  >
+                    <div>
+                      <p className="font-semibold">{patient.name}</p>
+                      <p className="text-sm text-muted-foreground">{patient.rut}</p>
+                    </div>
+                    <Button variant="outline" size="sm">Seleccionar</Button>
+                  </div>
+                ))}
+              </div>
+              {filteredPatients.length === 0 && (
+                <div className="text-center p-8">
+                  <p className="text-muted-foreground">No se encontraron pacientes.</p>
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2"><User className="h-5 w-5 text-blue-600" />Resumen del Paciente</CardTitle>
@@ -232,133 +317,146 @@ export default function NewSessionPage() {
                 </div>
               </CardContent>
             </Card>
-          )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-purple-600" />Detalles de la Sesión</CardTitle>
-              <CardDescription>Configura los parámetros básicos de la sesión</CardDescription>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="sessionDate">Fecha *</Label>
-                <Input id="sessionDate" type="date" value={formData.sessionDate} onChange={e => handleInputChange('sessionDate', e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="sessionTime">Hora *</Label>
-                <Input id="sessionTime" type="time" value={formData.sessionTime} onChange={e => handleInputChange('sessionTime', e.target.value)} />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Mic className="h-5 w-5 text-red-600" />Grabación de Audio (Opcional)</CardTitle>
-              <CardDescription>Graba la sesión para transcripción y análisis con IA</CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <div className={`w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center ${isRecording ? "bg-red-100 dark:bg-red-900/20" : "bg-muted"}`}>
-                <Mic className={`h-8 w-8 ${isRecording ? "text-red-600 dark:text-red-400" : "text-muted-foreground"}`} />
-              </div>
-              {isRecording && <div className="text-2xl font-mono text-red-600 dark:text-red-400 mb-4">{new Date(recordingTime * 1000).toISOString().substr(14, 5)}</div>}
-              <div className="flex gap-4 justify-center">
-                <Button type="button" onClick={() => setIsRecording(prev => !prev)} variant={isRecording ? "destructive" : "secondary"}>
-                  {isRecording ? <><Pause className="h-4 w-4 mr-2" />Detener</> : <><Mic className="h-4 w-4 mr-2" />Iniciar Grabación</>}
-                </Button>
-                <Button type="button" variant="outline"><Upload className="h-4 w-4 mr-2" />Subir Audio</Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2"><Brain className="h-5 w-5 text-green-600" />Contenido de la Sesión</CardTitle>
-                  <CardDescription>Registra los aspectos clínicos y terapéuticos de la sesión</CardDescription>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-purple-600" />Detalles de la Sesión</CardTitle>
+                <CardDescription>Configura los parámetros básicos de la sesión</CardDescription>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="sessionDate">Fecha *</Label>
+                  <Input id="sessionDate" type="date" value={formData.sessionDate} onChange={e => handleInputChange('sessionDate', e.target.value)} />
                 </div>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button type="button" variant="outline" size="icon" onClick={handleStructureWithAI} disabled={isStructuring}>
-                        {isStructuring ? <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" /> : <Sparkles className="h-4 w-4" />}
+                <div className="space-y-2">
+                  <Label htmlFor="sessionTime">Hora *</Label>
+                  <Input id="sessionTime" type="time" value={formData.sessionTime} onChange={e => handleInputChange('sessionTime', e.target.value)} />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Mic className="h-5 w-5 text-red-600" />Grabación de Audio (Opcional)</CardTitle>
+                <CardDescription>Graba la sesión para transcripción y análisis con IA</CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <div className={`w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center ${isRecording ? "bg-red-100 dark:bg-red-900/20" : "bg-muted"}`}>
+                  <Mic className={`h-8 w-8 ${isRecording ? "text-red-600 dark:text-red-400" : "text-muted-foreground"}`} />
+                </div>
+                {isRecording && <div className="text-2xl font-mono text-red-600 dark:text-red-400 mb-4">{new Date(recordingTime * 1000).toISOString().substr(14, 5)}</div>}
+                <div className="flex gap-4 justify-center">
+                  <Button type="button" onClick={() => setIsRecording(prev => !prev)} variant={isRecording ? "destructive" : "secondary"}>
+                    {isRecording ? <><Pause className="h-4 w-4 mr-2" />Detener</> : <><Mic className="h-4 w-4 mr-2" />Iniciar Grabación</>}
+                  </Button>
+                  <Button type="button" variant="outline"><Upload className="h-4 w-4 mr-2" />Subir Audio</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2"><Brain className="h-5 w-5 text-green-600" />Contenido de la Sesión</CardTitle>
+                    <CardDescription>Escribe el contenido de la sesión. Puedes grabarlo o transcribirlo.</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {contentWasReplaced && (
+                  <Alert variant="default" className="mb-4 bg-blue-50 border-blue-200">
+                    <Sparkles className="h-4 w-4 text-blue-600" />
+                    <AlertTitle className="text-blue-800">Contenido mejorado con IA</AlertTitle>
+                    <AlertDescription className="text-blue-700">
+                      El contenido ha sido re-estructurado.
+                      <Button variant="link" size="sm" onClick={handleUndoReplace} className="p-0 h-auto ml-2 text-blue-700">
+                        <Undo2 className="h-3 w-3 mr-1"/>
+                        Deshacer
                       </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Estructurar con IA</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <Label htmlFor="sessionContent">Registro Clínico *</Label>
-                  {contentWasReplaced && (
-                    <Button type="button" variant="ghost" size="sm" onClick={handleUndoReplace} className="text-xs">
-                      <Undo2 className="h-3 w-3 mr-1" />
-                      Deshacer reemplazo
-                    </Button>
-                  )}
-                </div>
+                    </AlertDescription>
+                  </Alert>
+                )}
                 <RichTextEditor
                   value={formData.sessionContent}
-                  onChange={(content) => handleInputChange('sessionContent', content)}
+                  onChange={(value) => handleInputChange('sessionContent', value)}
                 />
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+            
+            {!isFormValid && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Campos Incompletos</AlertTitle>
+                <AlertDescription>
+                  Debes seleccionar un paciente y completar el registro clínico para poder guardar.
+                </AlertDescription>
+              </Alert>
+            )}
 
-          {!isFormValid && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Campos Incompletos</AlertTitle>
-              <AlertDescription>
-                Debes seleccionar un paciente y completar el registro clínico para poder guardar.
-              </AlertDescription>
-            </Alert>
-          )}
+            <div className="flex justify-end items-center gap-4">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button type="button" variant="outline" onClick={handleStructureWithAI} disabled={!formData.sessionContent.trim() || isStructuring}>
+                      {isStructuring ? (
+                        <Sparkles className="h-4 w-4 mr-2 animate-pulse" />
+                      ) : (
+                        <Sparkles className="h-4 w-4 mr-2" />
+                      )}
+                      Estructurar con IA
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Organiza y formatea tus notas usando IA.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
-          <div className="flex justify-end gap-4">
-            <Button type="button" variant="outline" onClick={() => router.back()}>Cancelar</Button>
-            <Button type="submit" disabled={!isFormValid || isSubmitting}>
-              {isSubmitting ? (
-                <><div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2" />Guardando...</>
-              ) : (
-                <><Save className="h-4 w-4 mr-2" />Guardar Sesión</>
-              )}
-            </Button>
-          </div>
-        </form>
-
-        <Dialog open={showAIModal} onOpenChange={setShowAIModal}>
-          <DialogContent className="max-w-3xl">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-purple-500" />
-                Asistente de Documentación IA
-              </DialogTitle>
-              <DialogDescription>
-                La IA ha estructurado tus notas. Puedes editar el resultado antes de aceptarlo.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-4">
-              <div className="space-y-2">
-                <Label>Resultado Estructurado:</Label>
-                <RichTextEditor 
-                  value={structuredContent}
-                  onChange={setStructuredContent}
-                />
-              </div>
+              <Button type="submit" disabled={!isFormValid || isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Save className="h-4 w-4 mr-2 animate-spin" />
+                    Guardando...
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Guardar Sesión
+                  </>
+                )}
+              </Button>
             </div>
-            <DialogFooter>
-              <Button variant="ghost" onClick={() => setShowAIModal(false)}>Cancelar</Button>
-              <Button onClick={handleAcceptAIContent}>Aceptar y Reemplazar</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+          </form>
+        )}
       </div>
+
+      <Dialog open={showAIModal} onOpenChange={setShowAIModal}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-purple-500" />
+              Asistente de Documentación IA
+            </DialogTitle>
+            <DialogDescription>
+              La IA ha estructurado tus notas. Puedes editar el resultado antes de aceptarlo.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-4">
+            <div className="space-y-2">
+              <Label>Resultado Estructurado:</Label>
+              <RichTextEditor 
+                value={structuredContent}
+                onChange={setStructuredContent}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setShowAIModal(false)}>Cancelar</Button>
+            <Button onClick={handleAcceptAIContent}>Aceptar y Reemplazar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 } 
