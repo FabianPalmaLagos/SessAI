@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Brain, FileText, Download, Sparkles } from "lucide-react"
+import { Brain, FileText, Download, Sparkles, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
 export default function AIAnalysisPage() {
@@ -79,12 +79,20 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-            <Brain className="h-8 w-8 text-primary" />
-            Análisis con IA
-          </h1>
-          <p className="text-muted-foreground">Generación de informes y asistente de documentación inteligente</p>
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
+              <Brain className="h-8 w-8 text-primary" />
+              Análisis con IA
+            </h1>
+            <p className="text-muted-foreground">Generación de informes y asistente de documentación inteligente</p>
+          </div>
+          <Link href="/">
+            <Button variant="outline">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Volver al Dashboard
+            </Button>
+          </Link>
         </div>
 
         <Tabs defaultValue="generate-report" className="space-y-6">
@@ -255,13 +263,6 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
             </Card>
           </TabsContent>
         </Tabs>
-
-        {/* Back to Dashboard */}
-        <div className="mt-8">
-          <Link href="/">
-            <Button variant="outline">← Volver al Dashboard</Button>
-          </Link>
-        </div>
       </div>
     </div>
   )

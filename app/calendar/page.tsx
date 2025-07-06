@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarView } from "@/components/calendar-view";
 import { mockSessions, mockTherapists, mockPatients } from "@/lib/mock-data";
-import { Calendar as CalendarIcon, Filter, Users, Clock, Settings, Search } from "lucide-react";
+import { Calendar as CalendarIcon, Filter, Users, Clock, Settings, Search, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Link from "next/link";
 
 export default function CalendarPage() {
   const [selectedTherapists, setSelectedTherapists] = useState<string[]>(
@@ -97,10 +98,12 @@ export default function CalendarPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              <Settings className="h-4 w-4 mr-2" />
-              Configurar
-            </Button>
+            <Link href="/">
+                <Button variant="outline" size="sm">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Volver al Dashboard
+                </Button>
+            </Link>
           </div>
         </div>
         

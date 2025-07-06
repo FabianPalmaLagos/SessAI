@@ -24,7 +24,10 @@ import {
   Calendar,
   Lock,
   UserCheck,
-  AlertTriangle
+  AlertTriangle,
+  BrainCircuit,
+  CreditCard,
+  ArrowLeft
 } from "lucide-react"
 import Link from "next/link"
 
@@ -38,6 +41,7 @@ interface Therapist {
   schedule: {
     [key: string]: { start: string; end: string; available: boolean }
   }
+  type: 'lunch' | 'meeting' | 'break' | 'other'
 }
 
 interface BlockedTime {
@@ -67,7 +71,8 @@ export default function AdminPage() {
         friday: { start: '09:00', end: '17:00', available: true },
         saturday: { start: '09:00', end: '13:00', available: false },
         sunday: { start: '09:00', end: '13:00', available: false }
-      }
+      },
+      type: 'lunch'
     },
     {
       id: '2',
@@ -84,7 +89,8 @@ export default function AdminPage() {
         friday: { start: '10:00', end: '18:00', available: true },
         saturday: { start: '09:00', end: '14:00', available: true },
         sunday: { start: '09:00', end: '13:00', available: false }
-      }
+      },
+      type: 'lunch'
     }
   ])
 
@@ -118,6 +124,10 @@ export default function AdminPage() {
     showStatus: true,
     defaultView: 'week'
   })
+
+  const [aiSettings, setAiSettings] = useState({
+    aiModel: 'balanced',
+  });
 
   const [newTherapist, setNewTherapist] = useState({
     name: '',
@@ -153,7 +163,8 @@ export default function AdminPage() {
           friday: { start: '09:00', end: '17:00', available: true },
           saturday: { start: '09:00', end: '13:00', available: false },
           sunday: { start: '09:00', end: '13:00', available: false }
-        }
+        },
+        type: 'lunch'
       }
       setTherapists([...therapists, therapist])
       setNewTherapist({ name: '', email: '', specialty: '', role: 'therapist' })
@@ -218,7 +229,12 @@ export default function AdminPage() {
               </h1>
               <p className="text-muted-foreground">Administración de la plataforma y configuración avanzada</p>
             </div>
-
+            <Link href="/">
+              <Button variant="outline">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Volver al Dashboard
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -227,7 +243,7 @@ export default function AdminPage() {
             <TabsTrigger value="therapists">Equipo Terapéutico</TabsTrigger>
             <TabsTrigger value="schedules">Horarios</TabsTrigger>
             <TabsTrigger value="permissions">Permisos</TabsTrigger>
-            <TabsTrigger value="calendar">Configuración</TabsTrigger>
+            <TabsTrigger value="settings">Configuración</TabsTrigger>
           </TabsList>
 
           {/* Gestión de Terapeutas */}
@@ -616,103 +632,115 @@ export default function AdminPage() {
             </Card>
           </TabsContent>
 
-          {/* Configuración del Calendario */}
-          <TabsContent value="calendar">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Eye className="h-5 w-5 text-primary" />
-                  Configuración del Calendario
-                </CardTitle>
-                <CardDescription>Definir qué información mostrar en cada slot del calendario</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
+          {/* Configuración */}
+          <TabsContent value="settings">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calendar className="h-5 w-5 text-primary" />
+                    Configuración del Calendario
+                  </CardTitle>
+                  <CardDescription>
+                    Definir qué información mostrar en cada slot del calendario
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
                   <div>
-                    <h3 className="font-semibold mb-4">Columnas Visibles</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor="showPatientName">Nombre del Paciente</Label>
-                          <Switch
-                            id="showPatientName"
-                            checked={calendarSettings.showPatientName}
-                            onCheckedChange={(checked) => setCalendarSettings({ ...calendarSettings, showPatientName: checked })}
-                          />
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor="showTherapistName">Nombre del Terapeuta</Label>
-                          <Switch
-                            id="showTherapistName"
-                            checked={calendarSettings.showTherapistName}
-                            onCheckedChange={(checked) => setCalendarSettings({ ...calendarSettings, showTherapistName: checked })}
-                          />
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor="showSessionType">Tipo de Sesión</Label>
-                          <Switch
-                            id="showSessionType"
-                            checked={calendarSettings.showSessionType}
-                            onCheckedChange={(checked) => setCalendarSettings({ ...calendarSettings, showSessionType: checked })}
-                          />
-                        </div>
+                    <Label className="font-semibold">Columnas Visibles</Label>
+                    <div className="grid grid-cols-2 gap-4 mt-2">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="show-patient" className="text-sm font-normal">Nombre del Paciente</Label>
+                        <Switch id="show-patient" checked={calendarSettings.showPatientName} onCheckedChange={(value) => setCalendarSettings(prev => ({...prev, showPatientName: value}))} />
                       </div>
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor="showDuration">Duración</Label>
-                          <Switch
-                            id="showDuration"
-                            checked={calendarSettings.showDuration}
-                            onCheckedChange={(checked) => setCalendarSettings({ ...calendarSettings, showDuration: checked })}
-                          />
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor="showNotes">Notas</Label>
-                          <Switch
-                            id="showNotes"
-                            checked={calendarSettings.showNotes}
-                            onCheckedChange={(checked) => setCalendarSettings({ ...calendarSettings, showNotes: checked })}
-                          />
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor="showStatus">Estado</Label>
-                          <Switch
-                            id="showStatus"
-                            checked={calendarSettings.showStatus}
-                            onCheckedChange={(checked) => setCalendarSettings({ ...calendarSettings, showStatus: checked })}
-                          />
-                        </div>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="show-duration" className="text-sm font-normal">Duración</Label>
+                        <Switch id="show-duration" checked={calendarSettings.showDuration} onCheckedChange={(value) => setCalendarSettings(prev => ({...prev, showDuration: value}))} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="show-therapist" className="text-sm font-normal">Nombre del Terapeuta</Label>
+                        <Switch id="show-therapist" checked={calendarSettings.showTherapistName} onCheckedChange={(value) => setCalendarSettings(prev => ({...prev, showTherapistName: value}))} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="show-notes" className="text-sm font-normal">Notas</Label>
+                        <Switch id="show-notes" checked={calendarSettings.showNotes} onCheckedChange={(value) => setCalendarSettings(prev => ({...prev, showNotes: value}))} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="show-type" className="text-sm font-normal">Tipo de Sesión</Label>
+                        <Switch id="show-type" checked={calendarSettings.showSessionType} onCheckedChange={(value) => setCalendarSettings(prev => ({...prev, showSessionType: value}))} />
+                      </div>
+                       <div className="flex items-center justify-between">
+                        <Label htmlFor="show-status" className="text-sm font-normal">Estado</Label>
+                        <Switch id="show-status" checked={calendarSettings.showStatus} onCheckedChange={(value) => setCalendarSettings(prev => ({...prev, showStatus: value}))} />
                       </div>
                     </div>
                   </div>
-
-                  <Separator />
-
                   <div>
-                    <h3 className="font-semibold mb-4">Vista Predeterminada</h3>
-                    <Select value={calendarSettings.defaultView} onValueChange={(value) => setCalendarSettings({ ...calendarSettings, defaultView: value })}>
-                      <SelectTrigger className="w-48">
-                        <SelectValue />
+                    <Label htmlFor="default-view" className="font-semibold">Vista Predeterminada</Label>
+                    <Select value={calendarSettings.defaultView} onValueChange={(value) => setCalendarSettings(prev => ({...prev, defaultView: value as 'week' | 'day' | 'month'}))}>
+                      <SelectTrigger id="default-view" className="w-full mt-2">
+                        <SelectValue placeholder="Seleccionar vista" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="day">Día</SelectItem>
                         <SelectItem value="week">Semana</SelectItem>
+                        <SelectItem value="day">Día</SelectItem>
                         <SelectItem value="month">Mes</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
+                </CardContent>
+              </Card>
 
-                  <Separator />
-
-                  <div className="flex justify-end">
-                    <Button className="flex items-center gap-2">
-                      <Save className="h-4 w-4" />
-                      Guardar Configuración
-                    </Button>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BrainCircuit className="h-5 w-5 text-primary" />
+                    Gestión de IA
+                  </CardTitle>
+                  <CardDescription>
+                    Configura el comportamiento de los modelos de IA y monitorea su consumo.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="ai-model" className="font-semibold">Modelo de IA Principal</Label>
+                    <Select value={aiSettings.aiModel} onValueChange={(value) => setAiSettings(prev => ({...prev, aiModel: value as 'balanced' | 'fast' | 'advanced'}))}>
+                      <SelectTrigger id="ai-model" className="w-full">
+                        <SelectValue placeholder="Seleccionar modelo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="fast">Rápido y Económico</SelectItem>
+                        <SelectItem value="balanced">Equilibrado (Recomendado)</SelectItem>
+                        <SelectItem value="advanced">Avanzado y Preciso</SelectItem>
+                      </SelectContent>
+                    </Select>
+                     <p className="text-sm text-muted-foreground">
+                      Elige el balance entre velocidad, costo y precisión para las tareas de IA.
+                    </p>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                  <Separator />
+                  <div className="space-y-2">
+                    <h4 className="font-semibold">Control de Gastos</h4>
+                     <p className="text-sm text-muted-foreground pb-2">
+                      Revisa el consumo de créditos de IA y gestiona tu plan. Todos los datos son anonimizados para proteger la privacidad.
+                    </p>
+                    <Link href="/admin/billing">
+                      <Button variant="outline" className="w-full md:w-auto">
+                        <CreditCard className="mr-2 h-4 w-4" />
+                        Ir al Dashboard de Consumo
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="flex justify-end mt-6">
+              <Button>
+                <Save className="mr-2 h-4 w-4" />
+                Guardar Configuración
+              </Button>
+            </div>
           </TabsContent>
         </Tabs>
 

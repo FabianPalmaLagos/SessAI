@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Search, Plus, User, Phone, Mail, Calendar, FileText } from "lucide-react"
+import { Search, Plus, User, Phone, Mail, Calendar, FileText, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
 const mockPatients = [
@@ -61,28 +61,32 @@ export default function PatientsPage() {
             <h1 className="text-3xl font-bold text-foreground">Gestión de Pacientes</h1>
             <p className="text-muted-foreground">Administra fichas, historiales y búsqueda avanzada</p>
           </div>
+          <Link href="/">
+            <Button variant="outline">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Volver al Dashboard
+            </Button>
+          </Link>
+        </div>
+
+        {/* Search Bar and Actions */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="relative flex-grow">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por nombre o RUT..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
           <Link href="/patients/new">
-            <Button className="flex items-center gap-2">
+            <Button className="flex items-center gap-2 whitespace-nowrap">
               <Plus className="h-4 w-4" />
               Nuevo Paciente
             </Button>
           </Link>
         </div>
-
-        {/* Search Bar */}
-        <Card className="mb-6">
-          <CardContent className="pt-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar por nombre o RUT..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Patients Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -145,13 +149,6 @@ export default function PatientsPage() {
             </CardContent>
           </Card>
         )}
-
-        {/* Back to Dashboard */}
-        <div className="mt-8">
-          <Link href="/">
-            <Button variant="outline">← Volver al Dashboard</Button>
-          </Link>
-        </div>
       </div>
     </div>
   )

@@ -3,7 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Mic, Play, Brain, Calendar, User } from "lucide-react"
+import { Mic, Play, Brain, Calendar, User, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
 const mockSessions = [
@@ -40,6 +40,12 @@ export default function SessionsPage() {
             <h1 className="text-3xl font-bold text-gray-900">Historial de Sesiones</h1>
             <p className="text-gray-600">Consulta y gestiona todas las sesiones registradas</p>
           </div>
+          <Link href="/">
+            <Button variant="outline">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Volver al Dashboard
+            </Button>
+          </Link>
         </div>
 
         {/* Info Card */}
@@ -114,13 +120,6 @@ export default function SessionsPage() {
                 </Card>
               ))}
             </div>
-        </div>
-
-        {/* Back to Dashboard */}
-        <div className="mt-8">
-          <Link href="/">
-            <Button variant="outline">← Volver al Dashboard</Button>
-          </Link>
         </div>
       </div>
     </div>
