@@ -5,6 +5,22 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [`v0.2.0`] - 2024-07-29
+
+### ✨ Features
+
+- **Centro de Control Avanzado y Gestión de IA:** Se ha rediseñado por completo el "Centro de Control" para incluir una nueva y robusta sección de **"Gestión de IA"**.
+    - **Configuración de Modelos:** Los administradores ahora pueden seleccionar el modelo de IA principal que se utilizará en la plataforma, eligiendo entre opciones como "Rápido", "Equilibrado" o "Avanzado" para balancear costo y precisión.
+    - **Dashboard de Consumo:** Se ha añadido un enlace a un nuevo **Dashboard de Consumo**, una página dedicada a monitorear el uso de créditos de IA. Esta página presenta datos simulados con gráficos de consumo, historial de transacciones y métricas clave.
+    - **Regla de Negocio:** Se estableció una regla de negocio de $1 USD = 100 créditos para la futura implementación del backend.
+
+### 🛠️ Improvements
+
+- **UI/UX Consistente en Navegación:**
+    - Se ha estandarizado la navegación en todas las páginas principales (`Pacientes`, `Sesiones`, `Calendario`, `Análisis IA` y `Centro de Control`) añadiendo un botón "Volver al Dashboard" en una posición consistente en el encabezado.
+    - Se ha mejorado la disposición de los botones y la barra de búsqueda en la página de "Gestión de Pacientes" para una mejor usabilidad.
+    - Se ha reorganizado la pestaña de "Configuración" en el Centro de Control para que el botón "Guardar" aplique a todas las opciones de forma global y el diseño sea más equilibrado.
+
 ## [Sin Versionar] - 2024-01-XX
 
 ### Agregado

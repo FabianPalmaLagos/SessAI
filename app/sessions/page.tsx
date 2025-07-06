@@ -33,15 +33,15 @@ export default function SessionsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-4 sm:p-6">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Historial de Sesiones</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Historial de Sesiones</h1>
             <p className="text-gray-600">Consulta y gestiona todas las sesiones registradas</p>
           </div>
           <Link href="/">
-            <Button variant="outline">
+            <Button variant="outline" className="w-full sm:w-auto">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver al Dashboard
             </Button>
@@ -101,7 +101,7 @@ export default function SessionsPage() {
                       )}
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <Button variant="outline" size="sm">
                         Ver Completa
                       </Button>

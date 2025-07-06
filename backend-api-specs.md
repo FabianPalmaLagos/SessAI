@@ -81,8 +81,6 @@ Ayuda al terapeuta a procesar y estructurar notas de sesión de forma rápida.
 }
 ```
 
-
-
 ## 3. Funcionalidades de Soporte
 
 Endpoints necesarios para el correcto funcionamiento de la interfaz.
@@ -101,9 +99,100 @@ Endpoints necesarios para el correcto funcionamiento de la interfaz.
 
 ---
 
+## 4. Módulo de Administración (Centro de Control)
+
+Endpoints para gestionar la configuración de la plataforma y el consumo de IA.
+
+### 4.1. Gestión de Configuración de IA
+
+- **Ruta:** `GET /api/admin/ai/settings`
+- **Descripción:** Obtiene la configuración actual del modelo de IA para la cuenta.
+
+**Response Body:**
+```json
+{
+  "aiModel": "string" // "fast", "balanced", o "advanced"
+}
+```
+
+---
+
+- **Ruta:** `POST /api/admin/ai/settings`
+- **Descripción:** Guarda la configuración del modelo de IA.
+
+**Request Body (Payload):**
+```json
+{
+  "aiModel": "string" // "fast", "balanced", o "advanced"
+}
+```
+
+**Response Body:**
+```json
+{
+  "success": true,
+  "message": "Configuración guardada exitosamente."
+}
+```
+
+### 4.2. Dashboard de Consumo de IA
+
+- **Ruta:** `GET /api/admin/billing/summary`
+- **Descripción:** Devuelve un resumen del plan actual y el consumo de créditos.
+
+**Response Body:**
+```json
+{
+  "planDetails": {
+    "name": "string",
+    "creditsPerMonth": "number",
+    "renewalDate": "string (ISO 8601)"
+  },
+  "creditUsage": {
+    "used": "number",
+    "total": "number"
+  },
+  "averageCost": {
+    "perSession": "number"
+  }
+}
+```
+
+---
+
+- **Ruta:** `GET /api/admin/billing/history`
+- **Descripción:** Obtiene una lista paginada del historial de consumo de créditos.
+
+**Response Body:**
+```json
+{
+  "history": [
+    {
+      "id": "string",
+      "date": "string (ISO 8601)",
+      "type": "string", // "Resumen de Sesión", "Transcripción", etc.
+      "model": "string",
+      "credits": "number",
+      "patientId": "string"
+    }
+  ],
+  "pagination": {
+    "currentPage": "number",
+    "totalPages": "number",
+    "totalItems": "number"
+  }
+}
+```
+
 ## Consideraciones Generales
 
 ### Autenticación y Autorización
--   Toda la API debe estar protegida.
--   El backend debe identificar al terapeuta que realiza la solicitud para asegurar que solo acceda a los datos de sus propios pacientes.
--   Se recomienda el uso de tokens JWT o un sistema de sesión seguro. 
+- Toda la API debe estar protegida.
+- El backend debe identificar al terapeuta que realiza la solicitud para asegurar que solo acceda a los datos de sus propios pacientes.
+- Para los endpoints de `/api/admin`, se debe verificar que el usuario tenga rol de administrador.
+- Se recomienda el uso de tokens JWT o un sistema de sesión seguro.
+
+### Sistema de Créditos
+- El backend es responsable de calcular el costo en créditos de cada operación de IA.
+- La regla de negocio es **$1 USD = 100 créditos**.
+- El costo en USD de cada llamada a la API de IA se multiplica por 100 para determinar los créditos consumidos, que luego se descuentan de la cuenta del usuario. 

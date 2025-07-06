@@ -182,21 +182,21 @@ export default function Dashboard() {
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">Bienvenido de vuelta, Dr. Rodriguez</h1>
-              <p className="text-slate-600 text-lg">
+              <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-2">Bienvenido de vuelta, Dr. Rodriguez</h1>
+              <p className="text-slate-600 text-base lg:text-lg">
                 Potenciando el arte de la terapia con la precisión de la inteligencia artificial
               </p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="w-full lg:w-auto">
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
                 <Input
                   placeholder="Buscar pacientes, sesiones..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-64"
+                  className="pl-10 w-full lg:w-64"
                 />
               </div>
             </div>

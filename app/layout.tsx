@@ -10,7 +10,9 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "SessAI - Gestión Terapéutica con IA",
   description: "Potenciamos el arte de la terapia con la precisión de la inteligencia artificial",
-    generator: 'v0.dev'
+  icons: {
+    icon: "/logo.png",
+  },
 }
 
 export default function RootLayout({

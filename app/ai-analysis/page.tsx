@@ -77,18 +77,18 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-4 sm:p-6">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-              <Brain className="h-8 w-8 text-primary" />
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
+              <Brain className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
               Análisis con IA
             </h1>
             <p className="text-muted-foreground">Generación de informes y asistente de documentación inteligente</p>
           </div>
           <Link href="/">
-            <Button variant="outline">
+            <Button variant="outline" className="w-full sm:w-auto">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver al Dashboard
             </Button>

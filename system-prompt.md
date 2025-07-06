@@ -22,11 +22,17 @@ Registro de Sesiones: Corresponde al componente SessionsPage (app/sessions/page.
 
 Análisis con IA: Implementado en AIAnalysisPage (app/ai-analysis/page.tsx). La lógica de IA es actualmente simulada con setTimeout para demostrar el flujo de la UI.
 
+Centro de Control: Ubicado en `app/admin/page.tsx`, esta sección permite configurar ajustes globales de la aplicación, como la configuración del calendario y la gestión de la IA. Desde aquí se puede seleccionar el modelo de IA a utilizar (balanceando coste y calidad).
+
+Dashboard de Consumo y Facturación: Accesible desde el Centro de Control y ubicado en `app/admin/billing/page.tsx`, esta página ofrece una vista detallada del consumo de créditos de IA. Incluye un resumen del plan, un gráfico de uso diario y un historial de transacciones, todo basado en datos simulados.
+
 Arquitectura y Flujos de Datos:
 
 Enrutamiento: La aplicación utiliza el App Router de Next.js. Las rutas se definen por la estructura de directorios dentro de /app (ej. /app/patients corresponde a la URL /patients).
 
 Gestión de Estado: El estado es principalmente local y se gestiona con el hook useState dentro de cada componente de página (ej. searchTerm en PatientsPage). No existe actualmente un gestor de estado global como Context API o Redux.
+
+Navegación: La navegación principal se centraliza en el componente `navigation.tsx`. Adicionalmente, se ha estandarizado un patrón de navegación secundaria donde las páginas principales (Pacientes, Calendario, Sesiones, etc.) incluyen un botón "Volver al Dashboard" en su cabecera para una experiencia de usuario consistente.
 
 Componentes de UI: La interfaz se construye con componentes de shadcn/ui que son, en su mayoría, wrappers estilizados sobre primitivas de Radix UI. La personalización de estilos se realiza a través de Tailwind CSS y el archivo globals.css.
 

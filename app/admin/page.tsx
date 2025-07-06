@@ -54,6 +54,15 @@ interface BlockedTime {
   type: 'lunch' | 'meeting' | 'break' | 'other'
 }
 
+const calendarDisplayOptions = {
+  showPatientName: 'Nombre del Paciente',
+  showTherapistName: 'Nombre del Terapeuta',
+  showSessionType: 'Tipo de Sesión',
+  showDuration: 'Duración',
+  showNotes: 'Notas rápidas',
+  showStatus: 'Estado (agendada, etc.)'
+};
+
 export default function AdminPage() {
   const [therapists, setTherapists] = useState<Therapist[]>([
     {
@@ -149,6 +158,22 @@ export default function AdminPage() {
   const [isAddingTherapist, setIsAddingTherapist] = useState(false)
   const [isAddingBlockedTime, setIsAddingBlockedTime] = useState(false)
 
+  const updateTherapistScheduleTime = (therapistId: string, day: string, field: 'start' | 'end', value: string) => {
+    setTherapists(therapists.map(t =>
+      t.id === therapistId
+        ? { ...t, schedule: { ...t.schedule, [day]: { ...t.schedule[day], [field]: value } } }
+        : t
+    ))
+  }
+
+  const updateTherapistScheduleAvailability = (therapistId: string, day: string, available: boolean) => {
+    setTherapists(therapists.map(t =>
+      t.id === therapistId
+        ? { ...t, schedule: { ...t.schedule, [day]: { ...t.schedule[day], available } } }
+        : t
+    ))
+  }
+
   const handleAddTherapist = () => {
     if (newTherapist.name && newTherapist.email) {
       const therapist: Therapist = {
@@ -199,7 +224,7 @@ export default function AdminPage() {
     setBlockedTimes(blockedTimes.filter(b => b.id !== id))
   }
 
-  const updateTherapistSchedule = (therapistId: string, day: string, field: string, value: string | boolean) => {
+  const updateTherapistSchedule = (therapistId: string, day: string, field: string, value: any) => {
     setTherapists(therapists.map(t => 
       t.id === therapistId 
         ? { ...t, schedule: { ...t.schedule, [day]: { ...t.schedule[day], [field]: value } } }
@@ -218,19 +243,19 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-4 sm:p-6">
         {/* Header */}
         <div className="mb-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-                <Settings className="h-8 w-8 text-orange-600" />
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
+                <Settings className="h-7 w-7 sm:h-8 sm:w-8 text-orange-600" />
                 Centro de Control
               </h1>
               <p className="text-muted-foreground">Administración de la plataforma y configuración avanzada</p>
             </div>
             <Link href="/">
-              <Button variant="outline">
+              <Button variant="outline" className="w-full sm:w-auto">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Volver al Dashboard
               </Button>
@@ -239,8 +264,8 @@ export default function AdminPage() {
         </div>
 
         <Tabs defaultValue="therapists" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="therapists">Equipo Terapéutico</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
+            <TabsTrigger value="therapists">Equipo</TabsTrigger>
             <TabsTrigger value="schedules">Horarios</TabsTrigger>
             <TabsTrigger value="permissions">Permisos</TabsTrigger>
             <TabsTrigger value="settings">Configuración</TabsTrigger>
@@ -251,7 +276,7 @@ export default function AdminPage() {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                       <CardTitle className="flex items-center gap-2">
                         <Users className="h-5 w-5 text-primary" />
@@ -259,7 +284,7 @@ export default function AdminPage() {
                       </CardTitle>
                       <CardDescription>Agregar, editar y eliminar terapeutas del sistema</CardDescription>
                     </div>
-                    <Button onClick={() => setIsAddingTherapist(true)} className="flex items-center gap-2">
+                    <Button onClick={() => setIsAddingTherapist(true)} className="flex items-center gap-2 w-full sm:w-auto">
                       <Plus className="h-4 w-4" />
                       Agregar Terapeuta
                     </Button>
@@ -269,7 +294,7 @@ export default function AdminPage() {
                   {isAddingTherapist && (
                     <div className="border rounded-lg p-4 mb-4 bg-muted/50">
                       <h3 className="font-semibold mb-3">Nuevo Terapeuta</h3>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor="name">Nombre Completo</Label>
                           <Input
@@ -326,14 +351,14 @@ export default function AdminPage() {
                   <div className="space-y-4">
                     {therapists.map((therapist) => (
                       <div key={therapist.id} className="border rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-4">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                          <div className="flex items-start gap-4">
                             <div>
                               <h3 className="font-semibold">{therapist.name}</h3>
                               <p className="text-sm text-muted-foreground">{therapist.email}</p>
                               <p className="text-sm text-muted-foreground">{therapist.specialty}</p>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex flex-col sm:flex-row gap-2">
                               <Badge variant={therapist.status === 'active' ? 'default' : 'secondary'}>
                                 {therapist.status === 'active' ? 'Activo' : 'Inactivo'}
                               </Badge>
@@ -342,8 +367,8 @@ export default function AdminPage() {
                               </Badge>
                             </div>
                           </div>
-                          <div className="flex gap-2">
-                            <Button size="sm" variant="outline" className="flex items-center gap-1">
+                          <div className="flex gap-2 w-full sm:w-auto">
+                            <Button size="sm" variant="outline" className="flex items-center gap-1 flex-1 sm:flex-initial">
                               <Edit className="h-3 w-3" />
                               Editar
                             </Button>
@@ -351,7 +376,7 @@ export default function AdminPage() {
                               size="sm" 
                               variant="destructive" 
                               onClick={() => handleDeleteTherapist(therapist.id)}
-                              className="flex items-center gap-1"
+                              className="flex items-center gap-1 flex-1 sm:flex-initial"
                             >
                               <Trash2 className="h-3 w-3" />
                               Eliminar
@@ -389,7 +414,7 @@ export default function AdminPage() {
                                 <Label className="font-medium">{dayNames[index]}</Label>
                                 <Switch
                                   checked={therapist.schedule[day].available}
-                                  onCheckedChange={(checked) => updateTherapistSchedule(therapist.id, day, 'available', checked)}
+                                  onCheckedChange={(checked) => updateTherapistScheduleAvailability(therapist.id, day, checked)}
                                 />
                               </div>
                               {therapist.schedule[day].available && (
@@ -397,13 +422,13 @@ export default function AdminPage() {
                                   <Input
                                     type="time"
                                     value={therapist.schedule[day].start}
-                                    onChange={(e) => updateTherapistSchedule(therapist.id, day, 'start', e.target.value)}
+                                    onChange={(e) => updateTherapistScheduleTime(therapist.id, day, 'start', e.target.value)}
                                     className="text-sm"
                                   />
                                   <Input
                                     type="time"
                                     value={therapist.schedule[day].end}
-                                    onChange={(e) => updateTherapistSchedule(therapist.id, day, 'end', e.target.value)}
+                                    onChange={(e) => updateTherapistScheduleTime(therapist.id, day, 'end', e.target.value)}
                                     className="text-sm"
                                   />
                                 </div>
@@ -420,7 +445,7 @@ export default function AdminPage() {
               {/* Bloquear Horarios */}
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                       <CardTitle className="flex items-center gap-2">
                         <Lock className="h-5 w-5 text-primary" />
@@ -428,7 +453,7 @@ export default function AdminPage() {
                       </CardTitle>
                       <CardDescription>Marcar períodos no disponibles (almuerzos, reuniones, etc.)</CardDescription>
                     </div>
-                    <Button onClick={() => setIsAddingBlockedTime(true)} className="flex items-center gap-2">
+                    <Button onClick={() => setIsAddingBlockedTime(true)} className="flex items-center gap-2 w-full sm:w-auto">
                       <Plus className="h-4 w-4" />
                       Bloquear Horario
                     </Button>
@@ -438,7 +463,7 @@ export default function AdminPage() {
                   {isAddingBlockedTime && (
                     <div className="border rounded-lg p-4 mb-4 bg-muted/50">
                       <h3 className="font-semibold mb-3">Nuevo Bloqueo</h3>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor="therapist">Terapeuta</Label>
                           <Select value={newBlockedTime.therapistId} onValueChange={(value) => setNewBlockedTime({ ...newBlockedTime, therapistId: value })}>
@@ -455,35 +480,8 @@ export default function AdminPage() {
                           </Select>
                         </div>
                         <div>
-                          <Label htmlFor="date">Fecha</Label>
-                          <Input
-                            id="date"
-                            type="date"
-                            value={newBlockedTime.date}
-                            onChange={(e) => setNewBlockedTime({ ...newBlockedTime, date: e.target.value })}
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="startTime">Hora Inicio</Label>
-                          <Input
-                            id="startTime"
-                            type="time"
-                            value={newBlockedTime.startTime}
-                            onChange={(e) => setNewBlockedTime({ ...newBlockedTime, startTime: e.target.value })}
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="endTime">Hora Fin</Label>
-                          <Input
-                            id="endTime"
-                            type="time"
-                            value={newBlockedTime.endTime}
-                            onChange={(e) => setNewBlockedTime({ ...newBlockedTime, endTime: e.target.value })}
-                          />
-                        </div>
-                        <div>
                           <Label htmlFor="type">Tipo</Label>
-                          <Select value={newBlockedTime.type} onValueChange={(value: 'lunch' | 'meeting' | 'break' | 'other') => setNewBlockedTime({ ...newBlockedTime, type: value })}>
+                          <Select value={newBlockedTime.type} onValueChange={(value: any) => setNewBlockedTime({ ...newBlockedTime, type: value })}>
                             <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
@@ -495,14 +493,43 @@ export default function AdminPage() {
                             </SelectContent>
                           </Select>
                         </div>
-                        <div>
+                        <div className="col-span-1 sm:col-span-2">
                           <Label htmlFor="reason">Motivo</Label>
                           <Input
                             id="reason"
                             value={newBlockedTime.reason}
                             onChange={(e) => setNewBlockedTime({ ...newBlockedTime, reason: e.target.value })}
-                            placeholder="Descripción del bloqueo"
+                            placeholder="Ej. Reunión de equipo"
                           />
+                        </div>
+                        <div>
+                          <Label htmlFor="date">Fecha</Label>
+                          <Input
+                            id="date"
+                            type="date"
+                            value={newBlockedTime.date}
+                            onChange={(e) => setNewBlockedTime({ ...newBlockedTime, date: e.target.value })}
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <Label htmlFor="startTime">Hora Inicio</Label>
+                            <Input
+                              id="startTime"
+                              type="time"
+                              value={newBlockedTime.startTime}
+                              onChange={(e) => setNewBlockedTime({ ...newBlockedTime, startTime: e.target.value })}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="endTime">Hora Fin</Label>
+                            <Input
+                              id="endTime"
+                              type="time"
+                              value={newBlockedTime.endTime}
+                              onChange={(e) => setNewBlockedTime({ ...newBlockedTime, endTime: e.target.value })}
+                            />
+                          </div>
                         </div>
                       </div>
                       <div className="flex gap-2 mt-4">
@@ -517,30 +544,26 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {blockedTimes.map((blocked) => {
-                      const therapist = therapists.find(t => t.id === blocked.therapistId)
+                      const therapist = therapists.find(t => t.id === blocked.therapistId);
                       return (
-                        <div key={blocked.id} className="border rounded-lg p-3 flex items-center justify-between">
-                          <div>
-                            <div className="font-medium">{therapist?.name}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {blocked.date} • {blocked.startTime} - {blocked.endTime}
+                        <div key={blocked.id} className="border rounded-lg p-4">
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                            <div>
+                              <h3 className="font-semibold">{blocked.reason}</h3>
+                              <p className="text-sm text-muted-foreground">
+                                {therapist?.name} - {blocked.date} ({blocked.startTime} - {blocked.endTime})
+                              </p>
                             </div>
-                            <div className="text-sm text-muted-foreground">{blocked.reason}</div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline">
-                              {blocked.type === 'lunch' ? 'Almuerzo' : 
-                               blocked.type === 'meeting' ? 'Reunión' : 
-                               blocked.type === 'break' ? 'Descanso' : 'Otro'}
-                            </Badge>
-                            <Button 
-                              size="sm" 
-                              variant="destructive" 
+                            <Button
+                              size="sm"
+                              variant="destructive"
                               onClick={() => handleDeleteBlockedTime(blocked.id)}
+                              className="flex items-center gap-1 self-end sm:self-center"
                             >
                               <Trash2 className="h-3 w-3" />
+                              Eliminar
                             </Button>
                           </div>
                         </div>
@@ -557,73 +580,30 @@ export default function AdminPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-primary" />
-                  Permisos de Usuario
+                  <UserCheck className="h-5 w-5 text-primary" />
+                  Roles y Permisos
                 </CardTitle>
-                <CardDescription>Definir niveles de acceso del equipo</CardDescription>
+                <CardDescription>Asigna roles de administrador o terapeuta a los miembros del equipo</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {therapists.map((therapist) => (
-                    <div key={therapist.id} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <h3 className="font-semibold">{therapist.name}</h3>
-                          <p className="text-sm text-muted-foreground">{therapist.email}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Label htmlFor={`role-${therapist.id}`}>Rol:</Label>
-                          <Select 
-                            value={therapist.role} 
-                            onValueChange={(value: 'admin' | 'therapist') => updateTherapistRole(therapist.id, value)}
-                          >
-                            <SelectTrigger className="w-40">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="therapist">Terapeuta</SelectItem>
-                              <SelectItem value="admin">Administrador</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+                  {therapists.map(therapist => (
+                    <div key={therapist.id} className="border rounded-lg p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div>
+                        <h3 className="font-semibold">{therapist.name}</h3>
+                        <p className="text-sm text-muted-foreground">{therapist.specialty}</p>
                       </div>
-                      
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-3">
-                          <h4 className="font-medium text-sm">Permisos de Pacientes</h4>
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm">Ver pacientes</span>
-                              <Switch checked={true} />
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm">Editar pacientes</span>
-                              <Switch checked={therapist.role === 'admin'} />
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm">Eliminar pacientes</span>
-                              <Switch checked={therapist.role === 'admin'} />
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-3">
-                          <h4 className="font-medium text-sm">Permisos de Sistema</h4>
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm">Acceso a IA</span>
-                              <Switch checked={true} />
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm">Generar reportes</span>
-                              <Switch checked={true} />
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm">Centro de Control</span>
-                              <Switch checked={therapist.role === 'admin'} />
-                            </div>
-                          </div>
-                        </div>
+                      <div>
+                        <Label htmlFor={`role-${therapist.id}`} className="sr-only">Rol de {therapist.name}</Label>
+                        <Select value={therapist.role} onValueChange={(value: 'admin' | 'therapist') => updateTherapistRole(therapist.id, value)}>
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="therapist">Terapeuta</SelectItem>
+                            <SelectItem value="admin">Administrador</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                   ))}
@@ -634,121 +614,119 @@ export default function AdminPage() {
 
           {/* Configuración */}
           <TabsContent value="settings">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5 text-primary" />
-                    Configuración del Calendario
-                  </CardTitle>
-                  <CardDescription>
-                    Definir qué información mostrar en cada slot del calendario
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div>
-                    <Label className="font-semibold">Columnas Visibles</Label>
-                    <div className="grid grid-cols-2 gap-4 mt-2">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="show-patient" className="text-sm font-normal">Nombre del Paciente</Label>
-                        <Switch id="show-patient" checked={calendarSettings.showPatientName} onCheckedChange={(value) => setCalendarSettings(prev => ({...prev, showPatientName: value}))} />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="show-duration" className="text-sm font-normal">Duración</Label>
-                        <Switch id="show-duration" checked={calendarSettings.showDuration} onCheckedChange={(value) => setCalendarSettings(prev => ({...prev, showDuration: value}))} />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="show-therapist" className="text-sm font-normal">Nombre del Terapeuta</Label>
-                        <Switch id="show-therapist" checked={calendarSettings.showTherapistName} onCheckedChange={(value) => setCalendarSettings(prev => ({...prev, showTherapistName: value}))} />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="show-notes" className="text-sm font-normal">Notas</Label>
-                        <Switch id="show-notes" checked={calendarSettings.showNotes} onCheckedChange={(value) => setCalendarSettings(prev => ({...prev, showNotes: value}))} />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="show-type" className="text-sm font-normal">Tipo de Sesión</Label>
-                        <Switch id="show-type" checked={calendarSettings.showSessionType} onCheckedChange={(value) => setCalendarSettings(prev => ({...prev, showSessionType: value}))} />
-                      </div>
-                       <div className="flex items-center justify-between">
-                        <Label htmlFor="show-status" className="text-sm font-normal">Estado</Label>
-                        <Switch id="show-status" checked={calendarSettings.showStatus} onCheckedChange={(value) => setCalendarSettings(prev => ({...prev, showStatus: value}))} />
-                      </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BrainCircuit className="h-5 w-5 text-primary" />
+                      Gestión de IA
+                    </CardTitle>
+                    <CardDescription>Configura los modelos de IA y su comportamiento</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="ai-model">Modelo de IA Principal</Label>
+                      <Select value={aiSettings.aiModel} onValueChange={(value) => setAiSettings({ ...aiSettings, aiModel: value })}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="fast">Rápido (Menor costo, menor precisión)</SelectItem>
+                          <SelectItem value="balanced">Equilibrado (Recomendado)</SelectItem>
+                          <SelectItem value="advanced">Avanzado (Mayor costo, mayor precisión)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        El modelo seleccionado se usará para transcripciones y análisis.
+                      </p>
                     </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="default-view" className="font-semibold">Vista Predeterminada</Label>
-                    <Select value={calendarSettings.defaultView} onValueChange={(value) => setCalendarSettings(prev => ({...prev, defaultView: value as 'week' | 'day' | 'month'}))}>
-                      <SelectTrigger id="default-view" className="w-full mt-2">
-                        <SelectValue placeholder="Seleccionar vista" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="week">Semana</SelectItem>
-                        <SelectItem value="day">Día</SelectItem>
-                        <SelectItem value="month">Mes</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BrainCircuit className="h-5 w-5 text-primary" />
-                    Gestión de IA
-                  </CardTitle>
-                  <CardDescription>
-                    Configura el comportamiento de los modelos de IA y monitorea su consumo.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="ai-model" className="font-semibold">Modelo de IA Principal</Label>
-                    <Select value={aiSettings.aiModel} onValueChange={(value) => setAiSettings(prev => ({...prev, aiModel: value as 'balanced' | 'fast' | 'advanced'}))}>
-                      <SelectTrigger id="ai-model" className="w-full">
-                        <SelectValue placeholder="Seleccionar modelo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="fast">Rápido y Económico</SelectItem>
-                        <SelectItem value="balanced">Equilibrado (Recomendado)</SelectItem>
-                        <SelectItem value="advanced">Avanzado y Preciso</SelectItem>
-                      </SelectContent>
-                    </Select>
-                     <p className="text-sm text-muted-foreground">
-                      Elige el balance entre velocidad, costo y precisión para las tareas de IA.
-                    </p>
-                  </div>
-                  <Separator />
-                  <div className="space-y-2">
-                    <h4 className="font-semibold">Control de Gastos</h4>
-                     <p className="text-sm text-muted-foreground pb-2">
-                      Revisa el consumo de créditos de IA y gestiona tu plan. Todos los datos son anonimizados para proteger la privacidad.
-                    </p>
-                    <Link href="/admin/billing">
-                      <Button variant="outline" className="w-full md:w-auto">
-                        <CreditCard className="mr-2 h-4 w-4" />
-                        Ir al Dashboard de Consumo
+                {/* Configuración del Calendario */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Eye className="h-5 w-5 text-primary" />
+                      Visualización del Calendario
+                    </CardTitle>
+                    <CardDescription>Personaliza qué información se muestra en el calendario global</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
+                      {(Object.keys(calendarDisplayOptions) as Array<keyof typeof calendarDisplayOptions>).map((key) => (
+                        <div key={key} className="flex items-center space-x-3">
+                          <Switch
+                            id={key}
+                            checked={calendarSettings[key]}
+                            onCheckedChange={(checked) =>
+                              setCalendarSettings((prev) => ({ ...prev, [key]: checked }))
+                            }
+                          />
+                          <Label htmlFor={key} className="cursor-pointer">{calendarDisplayOptions[key]}</Label>
+                        </div>
+                      ))}
+                    </div>
+                    <Separator className="my-6" />
+                    <div className="space-y-2">
+                      <Label htmlFor="defaultView" className="text-base font-semibold">Vista por Defecto</Label>
+                       <p className="text-sm text-muted-foreground">
+                         Elige la vista inicial para el calendario de la plataforma.
+                       </p>
+                       <Select
+                         value={calendarSettings.defaultView}
+                         onValueChange={(value) =>
+                           setCalendarSettings((prev) => ({ ...prev, defaultView: value }))
+                         }
+                       >
+                         <SelectTrigger id="defaultView" className="w-full sm:w-[240px]">
+                           <SelectValue />
+                         </SelectTrigger>
+                         <SelectContent>
+                           <SelectItem value="week">Semana</SelectItem>
+                           <SelectItem value="day">Día</SelectItem>
+                           <SelectItem value="month">Mes</SelectItem>
+                         </SelectContent>
+                       </Select>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Consumo y Facturación */}
+              <div className="lg:col-span-1">
+                <Card className="bg-muted/30">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <CreditCard className="h-5 w-5 text-primary" />
+                      Consumo y Facturación
+                    </CardTitle>
+                    <CardDescription>Monitorea tu uso de créditos de IA.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center p-4 border rounded-lg bg-background">
+                      <p className="text-sm text-muted-foreground">Créditos restantes</p>
+                      <p className="text-3xl font-bold">1,250</p>
+                    </div>
+                    <Link href="/admin/billing" className="w-full">
+                      <Button className="w-full mt-4">
+                        Ver Dashboard de Consumo
                       </Button>
                     </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-            
-            <div className="flex justify-end mt-6">
-              <Button>
-                <Save className="mr-2 h-4 w-4" />
-                Guardar Configuración
-              </Button>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
 
-        {/* Back to Dashboard */}
-        <div className="mt-8">
-          <Link href="/">
-            <Button variant="outline">← Volver al Dashboard</Button>
-          </Link>
+        {/* Save Button */}
+        <div className="mt-6 flex justify-end">
+            <Button className="flex items-center gap-2">
+              <Save className="h-4 w-4" />
+              Guardar Cambios
+            </Button>
         </div>
       </div>
     </div>

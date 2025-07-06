@@ -13,6 +13,7 @@ import { Patient } from '@/types/patient';
 import { CalendarEvent } from '@/types/calendar';
 import { SessionModal } from './session-modal';
 import { useTheme } from 'next-themes';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CalendarViewProps {
   sessions: Session[];
@@ -22,6 +23,7 @@ interface CalendarViewProps {
 
 export function CalendarView({ sessions: initialSessions, therapists, patients }: CalendarViewProps) {
   const { theme } = useTheme();
+  const isMobile = useIsMobile();
   
   const [events, setEvents] = useState<CalendarEvent[]>(() => 
     initialSessions.map((session): CalendarEvent => {
@@ -84,6 +86,33 @@ export function CalendarView({ sessions: initialSessions, therapists, patients }
       ]);
     }
   };
+
+  const calendarOptions = isMobile 
+  ? { // Mobile options
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'listWeek,timeGridDay'
+      },
+      initialView: 'listWeek',
+      views: {
+        listWeek: {
+          buttonText: 'Lista',
+        },
+        timeGridDay: {
+          buttonText: 'Día'
+        }
+      }
+    }
+  : { // Desktop options
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      },
+      initialView: 'timeGridWeek',
+      views: {}
+    };
 
   return (
     <div className="h-full w-full">
@@ -288,12 +317,7 @@ export function CalendarView({ sessions: initialSessions, therapists, patients }
       
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
-        headerToolbar={{
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-        }}
-        initialView="timeGridWeek"
+        {...calendarOptions}
         events={events}
         editable={true}
         selectable={true}

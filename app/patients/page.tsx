@@ -54,15 +54,15 @@ export default function PatientsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-4 sm:p-6">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Gestión de Pacientes</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Gestión de Pacientes</h1>
             <p className="text-muted-foreground">Administra fichas, historiales y búsqueda avanzada</p>
           </div>
           <Link href="/">
-            <Button variant="outline">
+            <Button variant="outline" className="w-full sm:w-auto">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver al Dashboard
             </Button>
@@ -70,8 +70,8 @@ export default function PatientsPage() {
         </div>
 
         {/* Search Bar and Actions */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="relative flex-grow">
+        <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+          <div className="relative w-full sm:flex-grow">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Buscar por nombre o RUT..."
@@ -80,8 +80,8 @@ export default function PatientsPage() {
               className="pl-10"
             />
           </div>
-          <Link href="/patients/new">
-            <Button className="flex items-center gap-2 whitespace-nowrap">
+          <Link href="/patients/new" className="w-full sm:w-auto">
+            <Button className="flex items-center gap-2 whitespace-nowrap w-full sm:w-auto">
               <Plus className="h-4 w-4" />
               Nuevo Paciente
             </Button>
@@ -103,26 +103,26 @@ export default function PatientsPage() {
                 <CardDescription>RUT: {patient.rut}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    <span>{patient.email}</span>
+                <div className="space-y-3 text-sm text-muted-foreground">
+                  <div className="flex items-start gap-3">
+                    <Mail className="h-4 w-4 mt-0.5" />
+                    <span className="break-all">{patient.email}</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <Phone className="h-4 w-4" />
                     <span>{patient.phone}</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <Calendar className="h-4 w-4" />
                     <span>Última sesión: {patient.lastSession}</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <FileText className="h-4 w-4" />
                     <span>{patient.totalSessions} sesiones totales</span>
                   </div>
                 </div>
 
-                <div className="flex gap-2 mt-4">
+                <div className="flex flex-col sm:flex-row gap-2 mt-4">
                   <Link href={`/patients/${patient.id}`} className="flex-1">
                     <Button variant="outline" className="w-full">
                       Ver Ficha
