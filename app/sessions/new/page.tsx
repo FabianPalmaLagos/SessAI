@@ -135,7 +135,7 @@ export default function NewSessionPage() {
     return () => clearInterval(interval)
   }, [isRecording])
 
-  const calculateAge = (birthDate: string) => {
+  const calculateAge = (birthDate?: string) => {
     if (!birthDate) return ''
     const today = new Date()
     const birth = new Date(birthDate)

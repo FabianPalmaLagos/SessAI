@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -27,9 +27,12 @@ import {
   AlertTriangle,
   BrainCircuit,
   CreditCard,
-  ArrowLeft
+  ArrowLeft,
+  ChevronsUpDown
 } from "lucide-react"
 import Link from "next/link"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 
 interface Therapist {
   id: string
@@ -157,6 +160,8 @@ export default function AdminPage() {
   const [editingTherapist, setEditingTherapist] = useState<string | null>(null)
   const [isAddingTherapist, setIsAddingTherapist] = useState(false)
   const [isAddingBlockedTime, setIsAddingBlockedTime] = useState(false)
+  const [selectedTherapist, setSelectedTherapist] = useState<Therapist | null>(null)
+  const [openTherapistSelector, setOpenTherapistSelector] = useState(false)
 
   const updateTherapistScheduleTime = (therapistId: string, day: string, field: 'start' | 'end', value: string) => {
     setTherapists(therapists.map(t =>
@@ -266,7 +271,9 @@ export default function AdminPage() {
         <Tabs defaultValue="therapists" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
             <TabsTrigger value="therapists">Equipo</TabsTrigger>
-            <TabsTrigger value="schedules">Horarios</TabsTrigger>
+            <TabsTrigger value="schedules" className="flex items-center gap-2">
+              <Clock className="h-4 w-4" /> Horarios
+            </TabsTrigger>
             <TabsTrigger value="permissions">Permisos</TabsTrigger>
             <TabsTrigger value="settings">Configuración</TabsTrigger>
           </TabsList>
@@ -393,186 +400,223 @@ export default function AdminPage() {
 
           {/* Horarios Individuales */}
           <TabsContent value="schedules">
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Clock className="h-5 w-5 text-primary" />
-                    Horarios Individuales
-                  </CardTitle>
-                  <CardDescription>Configurar disponibilidad específica de cada terapeuta</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    {therapists.map((therapist) => (
-                      <div key={therapist.id} className="border rounded-lg p-4">
-                        <h3 className="font-semibold mb-4">{therapist.name}</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {days.map((day, index) => (
-                            <div key={day} className="space-y-2">
-                              <div className="flex items-center justify-between">
-                                <Label className="font-medium">{dayNames[index]}</Label>
-                                <Switch
-                                  checked={therapist.schedule[day].available}
-                                  onCheckedChange={(checked) => updateTherapistScheduleAvailability(therapist.id, day, checked)}
+            <Card>
+              <CardHeader>
+                <CardTitle>Horarios Individuales</CardTitle>
+                <CardDescription>Configurar disponibilidad específica de cada terapeuta.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="w-full md:w-1/3">
+                  <Label>Seleccionar Terapeuta</Label>
+                  <Popover open={openTherapistSelector} onOpenChange={setOpenTherapistSelector}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={openTherapistSelector}
+                        className="w-full justify-between"
+                      >
+                        {selectedTherapist
+                          ? selectedTherapist.name
+                          : "Buscar terapeuta..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[300px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Buscar por nombre..." />
+                        <CommandList>
+                          <CommandEmpty>No se encontró el terapeuta.</CommandEmpty>
+                          <CommandGroup>
+                            {therapists.map((therapist) => (
+                              <CommandItem
+                                key={therapist.id}
+                                value={therapist.name}
+                                onSelect={() => {
+                                  setSelectedTherapist(therapist)
+                                  setOpenTherapistSelector(false)
+                                }}
+                              >
+                                {therapist.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                {selectedTherapist && (
+                  <Card key={selectedTherapist.id} className="pt-6">
+                    <CardContent>
+                      <h3 className="text-lg font-semibold mb-4">{selectedTherapist.name}</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {days.map((day, index) => (
+                          <div key={day} className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <Label htmlFor={`${day}-available-${selectedTherapist.id}`}>{dayNames[index]}</Label>
+                              <Switch
+                                id={`${day}-available-${selectedTherapist.id}`}
+                                checked={selectedTherapist.schedule[day]?.available ?? false}
+                                onCheckedChange={(checked) => updateTherapistScheduleAvailability(selectedTherapist.id, day, checked)}
+                              />
+                            </div>
+                            {selectedTherapist.schedule[day]?.available && (
+                              <div className="flex items-center gap-2">
+                                <Input
+                                  type="time"
+                                  value={selectedTherapist.schedule[day].start}
+                                  onChange={(e) => updateTherapistScheduleTime(selectedTherapist.id, day, 'start', e.target.value)}
+                                  className="w-full"
+                                />
+                                <Input
+                                  type="time"
+                                  value={selectedTherapist.schedule[day].end}
+                                  onChange={(e) => updateTherapistScheduleTime(selectedTherapist.id, day, 'end', e.target.value)}
+                                  className="w-full"
                                 />
                               </div>
-                              {therapist.schedule[day].available && (
-                                <div className="flex gap-2">
-                                  <Input
-                                    type="time"
-                                    value={therapist.schedule[day].start}
-                                    onChange={(e) => updateTherapistScheduleTime(therapist.id, day, 'start', e.target.value)}
-                                    className="text-sm"
-                                  />
-                                  <Input
-                                    type="time"
-                                    value={therapist.schedule[day].end}
-                                    onChange={(e) => updateTherapistScheduleTime(therapist.id, day, 'end', e.target.value)}
-                                    className="text-sm"
-                                  />
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                    </CardContent>
+                  </Card>
+                )}
+              </CardContent>
+            </Card>
 
-              {/* Bloquear Horarios */}
-              <Card>
-                <CardHeader>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                      <CardTitle className="flex items-center gap-2">
-                        <Lock className="h-5 w-5 text-primary" />
-                        Bloquear Horarios
-                      </CardTitle>
-                      <CardDescription>Marcar períodos no disponibles (almuerzos, reuniones, etc.)</CardDescription>
-                    </div>
-                    <Button onClick={() => setIsAddingBlockedTime(true)} className="flex items-center gap-2 w-full sm:w-auto">
-                      <Plus className="h-4 w-4" />
-                      Bloquear Horario
-                    </Button>
+            {/* Bloquear Horarios */}
+            <Card>
+              <CardHeader>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Lock className="h-5 w-5 text-primary" />
+                      Bloquear Horarios
+                    </CardTitle>
+                    <CardDescription>Marcar períodos no disponibles (almuerzos, reuniones, etc.)</CardDescription>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  {isAddingBlockedTime && (
-                    <div className="border rounded-lg p-4 mb-4 bg-muted/50">
-                      <h3 className="font-semibold mb-3">Nuevo Bloqueo</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Button onClick={() => setIsAddingBlockedTime(true)} className="flex items-center gap-2 w-full sm:w-auto">
+                    <Plus className="h-4 w-4" />
+                    Bloquear Horario
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {isAddingBlockedTime && (
+                  <div className="border rounded-lg p-4 mb-4 bg-muted/50">
+                    <h3 className="font-semibold mb-3">Nuevo Bloqueo</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="therapist">Terapeuta</Label>
+                        <Select value={newBlockedTime.therapistId} onValueChange={(value) => setNewBlockedTime({ ...newBlockedTime, therapistId: value })}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Seleccionar terapeuta" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {therapists.map((therapist) => (
+                              <SelectItem key={therapist.id} value={therapist.id}>
+                                {therapist.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="type">Tipo</Label>
+                        <Select value={newBlockedTime.type} onValueChange={(value: any) => setNewBlockedTime({ ...newBlockedTime, type: value })}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="lunch">Almuerzo</SelectItem>
+                            <SelectItem value="meeting">Reunión</SelectItem>
+                            <SelectItem value="break">Descanso</SelectItem>
+                            <SelectItem value="other">Otro</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="col-span-1 sm:col-span-2">
+                        <Label htmlFor="reason">Motivo</Label>
+                        <Input
+                          id="reason"
+                          value={newBlockedTime.reason}
+                          onChange={(e) => setNewBlockedTime({ ...newBlockedTime, reason: e.target.value })}
+                          placeholder="Ej. Reunión de equipo"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="date">Fecha</Label>
+                        <Input
+                          id="date"
+                          type="date"
+                          value={newBlockedTime.date}
+                          onChange={(e) => setNewBlockedTime({ ...newBlockedTime, date: e.target.value })}
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <Label htmlFor="therapist">Terapeuta</Label>
-                          <Select value={newBlockedTime.therapistId} onValueChange={(value) => setNewBlockedTime({ ...newBlockedTime, therapistId: value })}>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Seleccionar terapeuta" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {therapists.map((therapist) => (
-                                <SelectItem key={therapist.id} value={therapist.id}>
-                                  {therapist.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label htmlFor="type">Tipo</Label>
-                          <Select value={newBlockedTime.type} onValueChange={(value: any) => setNewBlockedTime({ ...newBlockedTime, type: value })}>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="lunch">Almuerzo</SelectItem>
-                              <SelectItem value="meeting">Reunión</SelectItem>
-                              <SelectItem value="break">Descanso</SelectItem>
-                              <SelectItem value="other">Otro</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="col-span-1 sm:col-span-2">
-                          <Label htmlFor="reason">Motivo</Label>
+                          <Label htmlFor="startTime">Hora Inicio</Label>
                           <Input
-                            id="reason"
-                            value={newBlockedTime.reason}
-                            onChange={(e) => setNewBlockedTime({ ...newBlockedTime, reason: e.target.value })}
-                            placeholder="Ej. Reunión de equipo"
+                            id="startTime"
+                            type="time"
+                            value={newBlockedTime.startTime}
+                            onChange={(e) => setNewBlockedTime({ ...newBlockedTime, startTime: e.target.value })}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="date">Fecha</Label>
+                          <Label htmlFor="endTime">Hora Fin</Label>
                           <Input
-                            id="date"
-                            type="date"
-                            value={newBlockedTime.date}
-                            onChange={(e) => setNewBlockedTime({ ...newBlockedTime, date: e.target.value })}
+                            id="endTime"
+                            type="time"
+                            value={newBlockedTime.endTime}
+                            onChange={(e) => setNewBlockedTime({ ...newBlockedTime, endTime: e.target.value })}
                           />
                         </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <div>
-                            <Label htmlFor="startTime">Hora Inicio</Label>
-                            <Input
-                              id="startTime"
-                              type="time"
-                              value={newBlockedTime.startTime}
-                              onChange={(e) => setNewBlockedTime({ ...newBlockedTime, startTime: e.target.value })}
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor="endTime">Hora Fin</Label>
-                            <Input
-                              id="endTime"
-                              type="time"
-                              value={newBlockedTime.endTime}
-                              onChange={(e) => setNewBlockedTime({ ...newBlockedTime, endTime: e.target.value })}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex gap-2 mt-4">
-                        <Button onClick={handleAddBlockedTime} className="flex items-center gap-2">
-                          <Save className="h-4 w-4" />
-                          Guardar
-                        </Button>
-                        <Button variant="outline" onClick={() => setIsAddingBlockedTime(false)}>
-                          Cancelar
-                        </Button>
                       </div>
                     </div>
-                  )}
-
-                  <div className="space-y-4">
-                    {blockedTimes.map((blocked) => {
-                      const therapist = therapists.find(t => t.id === blocked.therapistId);
-                      return (
-                        <div key={blocked.id} className="border rounded-lg p-4">
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                            <div>
-                              <h3 className="font-semibold">{blocked.reason}</h3>
-                              <p className="text-sm text-muted-foreground">
-                                {therapist?.name} - {blocked.date} ({blocked.startTime} - {blocked.endTime})
-                              </p>
-                            </div>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => handleDeleteBlockedTime(blocked.id)}
-                              className="flex items-center gap-1 self-end sm:self-center"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                              Eliminar
-                            </Button>
-                          </div>
-                        </div>
-                      )
-                    })}
+                    <div className="flex gap-2 mt-4">
+                      <Button onClick={handleAddBlockedTime} className="flex items-center gap-2">
+                        <Save className="h-4 w-4" />
+                        Guardar
+                      </Button>
+                      <Button variant="outline" onClick={() => setIsAddingBlockedTime(false)}>
+                        Cancelar
+                      </Button>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                )}
+
+                <div className="space-y-4">
+                  {blockedTimes.map((blocked) => {
+                    const therapist = therapists.find(t => t.id === blocked.therapistId);
+                    return (
+                      <div key={blocked.id} className="border rounded-lg p-4">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                          <div>
+                            <h3 className="font-semibold">{blocked.reason}</h3>
+                            <p className="text-sm text-muted-foreground">
+                              {therapist?.name} - {blocked.date} ({blocked.startTime} - {blocked.endTime})
+                            </p>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDeleteBlockedTime(blocked.id)}
+                            className="flex items-center gap-1 self-end sm:self-center"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                            Eliminar
+                          </Button>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Permisos de Usuario */}
