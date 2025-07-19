@@ -24,9 +24,12 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
+import AuthGuard from "@/components/auth-guard"
+import { useAuth } from "@/hooks/useAuth"
 
-export default function Dashboard() {
+function DashboardContent() {
   const [searchQuery, setSearchQuery] = useState("")
+  const { user } = useAuth()
 
   const metrics = [
     {
@@ -34,8 +37,8 @@ export default function Dashboard() {
       value: "24",
       change: "+3 desde el mes pasado",
       icon: Users,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
+      color: "text-blue-600 dark:text-blue-400",
+      bgColor: "bg-blue-50 dark:bg-blue-950/50",
       trend: "up",
     },
     {
@@ -43,8 +46,8 @@ export default function Dashboard() {
       value: "18",
       change: "+12% vs semana anterior",
       icon: Calendar,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
+      color: "text-green-600 dark:text-green-400",
+      bgColor: "bg-green-50 dark:bg-green-950/50",
       trend: "up",
     },
     {
@@ -52,8 +55,8 @@ export default function Dashboard() {
       value: "7",
       change: "Este mes",
       icon: FileText,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
+      color: "text-purple-600 dark:text-purple-400",
+      bgColor: "bg-purple-50 dark:bg-purple-950/50",
       trend: "neutral",
     },
     {
@@ -61,8 +64,8 @@ export default function Dashboard() {
       value: "12h",
       change: "Con IA esta semana",
       icon: Clock,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
+      color: "text-orange-600 dark:text-orange-400",
+      bgColor: "bg-orange-50 dark:bg-orange-950/50",
       trend: "up",
     },
   ]
@@ -178,25 +181,27 @@ export default function Dashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-2">Bienvenido de vuelta, Dr. Rodriguez</h1>
-              <p className="text-slate-600 text-base lg:text-lg">
+              <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-gray-100 mb-2">
+                Bienvenido de vuelta, {user?.profile.firstName || 'Dr.'} {user?.profile.lastName || 'Rodriguez'}
+              </h1>
+              <p className="text-slate-600 dark:text-gray-400 text-base lg:text-lg">
                 Potenciando el arte de la terapia con la precisión de la inteligencia artificial
               </p>
             </div>
             <div className="w-full lg:w-auto">
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-gray-500" />
                 <Input
                   placeholder="Buscar pacientes, sesiones..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-full lg:w-64"
+                  className="pl-10 w-full lg:w-64 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
                 />
               </div>
             </div>
@@ -206,13 +211,13 @@ export default function Dashboard() {
         {/* Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {metrics.map((metric, index) => (
-            <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-200">
+            <Card key={index} className="relative overflow-hidden hover:shadow-lg dark:hover:shadow-xl transition-shadow duration-200 dark:bg-gray-800/50 dark:border-gray-700">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-slate-600 mb-1">{metric.title}</p>
-                    <p className="text-3xl font-bold text-slate-900">{metric.value}</p>
-                    <p className="text-sm text-slate-500 mt-1">{metric.change}</p>
+                    <p className="text-sm font-medium text-slate-600 dark:text-gray-400 mb-1">{metric.title}</p>
+                    <p className="text-3xl font-bold text-slate-900 dark:text-gray-100">{metric.value}</p>
+                    <p className="text-sm text-slate-500 dark:text-gray-500 mt-1">{metric.change}</p>
                   </div>
                   <div className={`p-3 rounded-full ${metric.bgColor}`}>
                     <metric.icon className={`w-6 h-6 ${metric.color}`} />
@@ -220,7 +225,7 @@ export default function Dashboard() {
                 </div>
                 {metric.trend === "up" && (
                   <div className="absolute top-4 right-4">
-                    <TrendingUp className="w-4 h-4 text-green-500" />
+                    <TrendingUp className="w-4 h-4 text-green-500 dark:text-green-400" />
                   </div>
                 )}
               </CardContent>
@@ -232,8 +237,8 @@ export default function Dashboard() {
           {/* Main Modules */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-900">Módulos Principales</h2>
-              <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-gray-100">Módulos Principales</h2>
+              <Badge variant="secondary" className="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
                 <Zap className="w-3 h-3 mr-1" />
                 IA Activada
               </Badge>
@@ -243,8 +248,8 @@ export default function Dashboard() {
               {modules.map((module, index) => (
                 <Link key={index} href={module.href}>
                   <Card
-                    className={`group cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1 ${
-                      module.featured ? "ring-2 ring-purple-200" : ""
+                    className={`group cursor-pointer transition-all duration-200 hover:shadow-xl dark:hover:shadow-2xl hover:-translate-y-1 dark:bg-gray-800/50 dark:border-gray-700 ${
+                      module.featured ? "ring-2 ring-purple-200 dark:ring-purple-800" : ""
                     }`}
                   >
                     <CardContent className="p-6">
@@ -255,21 +260,21 @@ export default function Dashboard() {
                           <module.icon className="w-6 h-6 text-white" />
                         </div>
                         {module.featured && (
-                          <Badge className="bg-purple-500 hover:bg-purple-600">
+                          <Badge className="bg-purple-500 hover:bg-purple-600 dark:bg-purple-600 dark:hover:bg-purple-700">
                             <Zap className="w-3 h-3 mr-1" />
                             IA
                           </Badge>
                         )}
                       </div>
 
-                      <h3 className="text-lg font-semibold text-slate-900 mb-2 group-hover:text-slate-700 transition-colors">
+                      <h3 className="text-lg font-semibold text-slate-900 dark:text-gray-100 mb-2 group-hover:text-slate-700 dark:group-hover:text-gray-200 transition-colors">
                         {module.title}
                       </h3>
-                      <p className="text-slate-600 text-sm mb-4 leading-relaxed">{module.description}</p>
+                      <p className="text-slate-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">{module.description}</p>
 
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-slate-500">{module.stats}</span>
-                        <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600 group-hover:translate-x-1 transition-all duration-200" />
+                        <span className="text-sm font-medium text-slate-500 dark:text-gray-500">{module.stats}</span>
+                        <ChevronRight className="w-4 h-4 text-slate-400 dark:text-gray-500 group-hover:text-slate-600 dark:group-hover:text-gray-400 group-hover:translate-x-1 transition-all duration-200" />
                       </div>
                     </CardContent>
                   </Card>
@@ -281,23 +286,23 @@ export default function Dashboard() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <Card>
+            <Card className="dark:bg-gray-800/50 dark:border-gray-700">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Zap className="w-5 h-5 text-purple-600" />
+                <CardTitle className="flex items-center space-x-2 dark:text-gray-100">
+                  <Zap className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   <span>Acciones Rápidas</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {quickActions.map((action, index) => (
                   <Link key={index} href={action.href}>
-                    <Button variant="ghost" className="w-full justify-start h-auto p-3 hover:bg-slate-50">
+                    <Button variant="ghost" className="w-full justify-start h-auto p-3 hover:bg-slate-50 dark:hover:bg-gray-700/50">
                       <div className={`p-2 rounded-lg ${action.color} mr-3`}>
                         <action.icon className="w-4 h-4 text-white" />
                       </div>
                       <div className="text-left">
-                        <div className="font-medium text-slate-900">{action.title}</div>
-                        <div className="text-xs text-slate-500">{action.description}</div>
+                        <div className="font-medium text-slate-900 dark:text-gray-100">{action.title}</div>
+                        <div className="text-xs text-slate-500 dark:text-gray-400">{action.description}</div>
                       </div>
                     </Button>
                   </Link>
@@ -306,10 +311,10 @@ export default function Dashboard() {
             </Card>
 
             {/* Recent Activity */}
-            <Card>
+            <Card className="dark:bg-gray-800/50 dark:border-gray-700">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Activity className="w-5 h-5 text-green-600" />
+                <CardTitle className="flex items-center space-x-2 dark:text-gray-100">
+                  <Activity className="w-5 h-5 text-green-600 dark:text-green-400" />
                   <span>Actividad Reciente</span>
                 </CardTitle>
               </CardHeader>
@@ -319,16 +324,16 @@ export default function Dashboard() {
                     <div
                       className={`w-2 h-2 rounded-full mt-2 ${
                         activity.type === "session"
-                          ? "bg-green-500"
+                          ? "bg-green-500 dark:bg-green-400"
                           : activity.type === "report"
-                            ? "bg-purple-500"
-                            : "bg-blue-500"
+                            ? "bg-purple-500 dark:bg-purple-400"
+                            : "bg-blue-500 dark:bg-blue-400"
                       }`}
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-900">{activity.patient}</p>
-                      <p className="text-sm text-slate-600">{activity.action}</p>
-                      <p className="text-xs text-slate-400">{activity.time}</p>
+                      <p className="text-sm font-medium text-slate-900 dark:text-gray-100">{activity.patient}</p>
+                      <p className="text-sm text-slate-600 dark:text-gray-300">{activity.action}</p>
+                      <p className="text-xs text-slate-400 dark:text-gray-500">{activity.time}</p>
                     </div>
                   </div>
                 ))}
@@ -336,13 +341,13 @@ export default function Dashboard() {
             </Card>
 
             {/* AI Demo Card */}
-            <Card className="bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200">
+            <Card className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/50 dark:to-blue-950/50 border-purple-200 dark:border-purple-800">
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Brain className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="font-semibold text-slate-900 mb-2">Demo IA en Vivo</h3>
-                <p className="text-sm text-slate-600 mb-4">
+                <h3 className="font-semibold text-slate-900 dark:text-gray-100 mb-2">Demo IA en Vivo</h3>
+                <p className="text-sm text-slate-600 dark:text-gray-300 mb-4">
                   Experimenta las capacidades de IA de SessAI en tiempo real
                 </p>
                 <Link href="/ai-demo">
@@ -357,5 +362,13 @@ export default function Dashboard() {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function Dashboard() {
+  return (
+    <AuthGuard>
+      <DashboardContent />
+    </AuthGuard>
   )
 }
