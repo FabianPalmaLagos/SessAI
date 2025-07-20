@@ -8,7 +8,7 @@ export const mockTherapists: Therapist[] = [
   { id: '2', name: 'Dr. Carlos Rojas', email: 'carlos.rojas@example.com', color: '#4caf50' },
   { id: '3', name: 'Dra. Lucia Gomez', email: 'lucia.gomez@example.com', color: '#f44336' },
   { id: '4', name: 'Dr. Miguel Torres', email: 'miguel.torres@example.com', color: '#9c27b0' },
-  { id: '5', name: 'Dra. Carmen Vega', email: 'carmen.vega@example.com', color: '#ff9800' },
+  { id: '5', name: 'Dra. Carmen Vega', email: 'carmen.vega@example.com', color: '#06b6d4' },
 ];
 
 export const mockPatients: Patient[] = [

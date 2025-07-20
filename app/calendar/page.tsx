@@ -86,14 +86,15 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-      <div className="mb-6">
-        <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6">
+          <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
               Calendario de Terapeutas
             </h1>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
               Gestiona y visualiza todas las sesiones terapéuticas en tiempo real
             </p>
           </div>
@@ -105,17 +106,18 @@ export default function CalendarPage() {
                 </Button>
             </Link>
           </div>
+          </div>
         </div>
         
         {/* Estadísticas rápidas */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-          <Card>
+          <Card className="dark:bg-slate-800/50 dark:border-slate-700">
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
                 <CalendarIcon className="h-4 w-4 text-blue-600" />
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Sesiones</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-50">{stats.totalSessions}</p>
+                  <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Sesiones</p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-slate-50">{stats.totalSessions}</p>
                 </div>
               </div>
             </CardContent>
@@ -125,8 +127,8 @@ export default function CalendarPage() {
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-green-600" />
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Hoy</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-50">{stats.todaySessions}</p>
+                  <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Hoy</p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-slate-50">{stats.todaySessions}</p>
                 </div>
               </div>
             </CardContent>
@@ -136,8 +138,8 @@ export default function CalendarPage() {
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4 text-purple-600" />
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Terapeutas</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-50">{stats.activeTherapists}</p>
+                  <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Terapeutas</p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-slate-50">{stats.activeTherapists}</p>
                 </div>
               </div>
             </CardContent>
@@ -153,156 +155,156 @@ export default function CalendarPage() {
             </CardContent>
           </Card>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-        {/* Panel de filtros */}
-        <div className="lg:col-span-1">
-          <Card className="sticky top-4">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Filter className="h-5 w-5" />
-                Filtros
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Filtro de Terapeutas */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <Label className="font-semibold">Terapeutas</Label>
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleSelectAllTherapists}
-                      className="h-6 px-2 text-xs"
-                    >
-                      Todos
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleDeselectAllTherapists}
-                      className="h-6 px-2 text-xs"
-                    >
-                      Ninguno
-                    </Button>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4 mt-6">
+          {/* Panel de filtros */}
+          <div className="lg:col-span-1">
+            <Card className="sticky top-4">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Filter className="h-5 w-5" />
+                  Filtros
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Filtro de Terapeutas */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <Label className="font-semibold">Terapeutas</Label>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleSelectAllTherapists}
+                        className="h-6 px-2 text-xs"
+                      >
+                        Todos
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleDeselectAllTherapists}
+                        className="h-6 px-2 text-xs"
+                      >
+                        Ninguno
+                      </Button>
+                    </div>
                   </div>
-                </div>
-                
-                {/* Barra de búsqueda de terapeutas */}
-                <div className="relative mb-3">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    placeholder="Buscar terapeuta..."
-                    value={therapistSearchTerm}
-                    onChange={(e) => setTherapistSearchTerm(e.target.value)}
-                    className="pl-9 pr-4 h-8 text-sm"
-                  />
+                  
+                  {/* Barra de búsqueda de terapeutas */}
+                  <div className="relative mb-3">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input
+                      placeholder="Buscar terapeuta..."
+                      value={therapistSearchTerm}
+                      onChange={(e) => setTherapistSearchTerm(e.target.value)}
+                      className="pl-9 pr-4 h-8 text-sm"
+                    />
+                    {therapistSearchTerm && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={clearTherapistSearch}
+                        className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-slate-100 dark:hover:bg-slate-700"
+                      >
+                        ×
+                      </Button>
+                    )}
+                  </div>
+
+                  {/* Lista de terapeutas con scroll */}
+                  <ScrollArea className="h-[200px] w-full rounded-md border border-slate-200 dark:border-slate-700">
+                    <div className="p-3 space-y-3">
+                      {filteredTherapists.length > 0 ? (
+                        filteredTherapists.map((therapist) => (
+                          <div key={therapist.id} className="flex items-center gap-3">
+                            <Checkbox
+                              id={`therapist-${therapist.id}`}
+                              checked={selectedTherapists.includes(therapist.id)}
+                              onCheckedChange={() => handleTherapistToggle(therapist.id)}
+                            />
+                            <div
+                              className="h-3 w-3 rounded-full border border-slate-300 dark:border-slate-600 flex-shrink-0"
+                              style={{ backgroundColor: therapist.color }}
+                            />
+                            <Label
+                              htmlFor={`therapist-${therapist.id}`}
+                              className="font-normal text-sm cursor-pointer flex-1 leading-tight"
+                            >
+                              {therapist.name}
+                            </Label>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-sm text-gray-500 dark:text-slate-400 text-center py-4">
+                          No se encontraron terapeutas
+                        </div>
+                      )}
+                    </div>
+                  </ScrollArea>
+                  
+                  {/* Información de filtro */}
                   {therapistSearchTerm && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={clearTherapistSearch}
-                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    >
-                      ×
-                    </Button>
+                    <div className="mt-2 text-xs text-gray-500 dark:text-slate-400">
+                      Mostrando {filteredTherapists.length} de {mockTherapists.length} terapeutas
+                    </div>
                   )}
                 </div>
 
-                {/* Lista de terapeutas con scroll */}
-                <ScrollArea className="h-[200px] w-full rounded-md border border-gray-200 dark:border-gray-700">
-                  <div className="p-3 space-y-3">
-                    {filteredTherapists.length > 0 ? (
-                      filteredTherapists.map((therapist) => (
-                        <div key={therapist.id} className="flex items-center gap-3">
-                          <Checkbox
-                            id={`therapist-${therapist.id}`}
-                            checked={selectedTherapists.includes(therapist.id)}
-                            onCheckedChange={() => handleTherapistToggle(therapist.id)}
-                          />
-                          <div
-                            className="h-3 w-3 rounded-full border border-gray-300 flex-shrink-0"
-                            style={{ backgroundColor: therapist.color }}
-                          />
-                          <Label
-                            htmlFor={`therapist-${therapist.id}`}
-                            className="font-normal text-sm cursor-pointer flex-1 leading-tight"
-                          >
-                            {therapist.name}
-                          </Label>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-                        No se encontraron terapeutas
+                <Separator />
+
+                {/* Filtro de Estados */}
+                <div>
+                  <Label className="font-semibold mb-3 block">Estados de Sesión</Label>
+                  <div className="space-y-3">
+                    {statusOptions.map((status) => (
+                      <div key={status.value} className="flex items-center gap-3">
+                        <Checkbox
+                          id={`status-${status.value}`}
+                          checked={selectedStatuses.includes(status.value)}
+                          onCheckedChange={() => handleStatusToggle(status.value)}
+                        />
+                        <Label
+                          htmlFor={`status-${status.value}`}
+                          className="font-normal text-sm cursor-pointer flex-1"
+                        >
+                          <Badge variant="secondary" className={status.color}>
+                            {status.label}
+                          </Badge>
+                        </Label>
                       </div>
-                    )}
+                    ))}
                   </div>
-                </ScrollArea>
-                
-                {/* Información de filtro */}
-                {therapistSearchTerm && (
-                  <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                    Mostrando {filteredTherapists.length} de {mockTherapists.length} terapeutas
-                  </div>
-                )}
-              </div>
-
-              <Separator />
-
-              {/* Filtro de Estados */}
-              <div>
-                <Label className="font-semibold mb-3 block">Estados de Sesión</Label>
-                <div className="space-y-3">
-                  {statusOptions.map((status) => (
-                    <div key={status.value} className="flex items-center gap-3">
-                      <Checkbox
-                        id={`status-${status.value}`}
-                        checked={selectedStatuses.includes(status.value)}
-                        onCheckedChange={() => handleStatusToggle(status.value)}
-                      />
-                      <Label
-                        htmlFor={`status-${status.value}`}
-                        className="font-normal text-sm cursor-pointer flex-1"
-                      >
-                        <Badge variant="secondary" className={status.color}>
-                          {status.label}
-                        </Badge>
-                      </Label>
-                    </div>
-                  ))}
                 </div>
-              </div>
 
-              <Separator />
+                <Separator />
 
-              {/* Resumen de filtros */}
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                <p>
-                  Mostrando <strong>{filteredSessions.length}</strong> de{" "}
-                  <strong>{mockSessions.length}</strong> sesiones
-                </p>
-                <p className="mt-1">
-                  <strong>{selectedTherapists.length}</strong> terapeutas seleccionados
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                {/* Resumen de filtros */}
+                <div className="text-sm text-slate-600 dark:text-slate-400">
+                  <p>
+                    Mostrando <strong>{filteredSessions.length}</strong> de{" "}
+                    <strong>{mockSessions.length}</strong> sesiones
+                  </p>
+                  <p className="mt-1">
+                    <strong>{selectedTherapists.length}</strong> terapeutas seleccionados
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-        {/* Calendario principal */}
-        <div className="lg:col-span-3">
-          <Card className="h-[900px]">
-            <CardContent className="p-6 h-full">
-              <CalendarView 
-                sessions={filteredSessions} 
-                therapists={mockTherapists} 
-                patients={mockPatients} 
-              />
-            </CardContent>
-          </Card>
+          {/* Calendario principal */}
+          <div className="lg:col-span-3">
+            <Card className="h-[900px]">
+              <CardContent className="p-6 h-full">
+                <CalendarView 
+                  sessions={filteredSessions} 
+                  therapists={mockTherapists} 
+                  patients={mockPatients} 
+                />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>

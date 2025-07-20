@@ -92,8 +92,8 @@ function Unauthorized({
               
               {/* Show required roles if specified */}
               {requiredRoles && requiredRoles.length > 0 && (
-                <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                  <div className="flex items-center gap-2 text-amber-800">
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center gap-2 text-blue-800">
                     <AlertTriangle className="h-4 w-4" />
                     <span className="text-sm font-medium">Roles requeridos:</span>
                   </div>
@@ -102,7 +102,7 @@ function Unauthorized({
                       {requiredRoles.map((role) => (
                         <span 
                           key={role}
-                          className="inline-block px-2 py-1 text-xs bg-amber-100 text-amber-800 rounded"
+                          className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded"
                         >
                           {role === 'admin' ? 'Administrador' : 
                            role === 'therapist' ? 'Terapeuta' : 'Asistente'}
@@ -165,7 +165,7 @@ export default function AuthGuard({
   // If authentication is required and user is authenticated, check roles
   if (requireAuth && isAuthenticated && requiredRoles && requiredRoles.length > 0) {
     const hasRequiredRole = requiredRoles.some(role => 
-      user?.role === role || authHelpers.hasRole(role)
+      user?.role === role
     )
 
     if (!hasRequiredRole) {

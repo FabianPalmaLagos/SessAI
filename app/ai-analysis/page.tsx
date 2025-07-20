@@ -76,16 +76,16 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
               <Brain className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
               Análisis con IA
             </h1>
-            <p className="text-muted-foreground">Generación de informes y asistente de documentación inteligente</p>
+            <p className="text-slate-600 dark:text-slate-300">Generación de informes y asistente de documentación inteligente</p>
           </div>
           <Link href="/">
             <Button variant="outline" className="w-full sm:w-auto">
@@ -114,7 +114,7 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium mb-2 block text-foreground">Paciente</label>
+                    <label className="text-sm font-medium mb-2 block text-slate-900 dark:text-slate-50">Paciente</label>
                     <Input
                       placeholder="Seleccionar paciente..."
                       value={selectedPatient}
@@ -124,11 +124,11 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-medium mb-2 block text-foreground">Fecha Inicio</label>
+                      <label className="text-sm font-medium mb-2 block text-slate-900 dark:text-slate-50">Fecha Inicio</label>
                       <Input type="date" />
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-2 block text-foreground">Fecha Fin</label>
+                      <label className="text-sm font-medium mb-2 block text-slate-900 dark:text-slate-50">Fecha Fin</label>
                       <Input type="date" />
                     </div>
                   </div>
@@ -188,7 +188,7 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
                       <pre className="whitespace-pre-wrap text-sm">{generatedReport}</pre>
                     </div>
                   ) : (
-                    <div className="text-center py-12 text-muted-foreground">
+                    <div className="text-center py-12 text-slate-500 dark:text-slate-400">
                       <FileText className="h-12 w-12 mx-auto mb-4" />
                       <p>El informe generado aparecerá aquí</p>
                     </div>
@@ -209,7 +209,7 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label htmlFor="instruction" className="text-sm font-medium mb-2 block text-foreground">Instrucción para la IA</label>
+                  <label htmlFor="instruction" className="text-sm font-medium mb-2 block text-slate-900 dark:text-slate-50">Instrucción para la IA</label>
                   <Input 
                     id="instruction"
                     placeholder="Ej: 'Genera un resumen en 5 puntos' o 'Convierte a formato SOAP'" 
@@ -219,7 +219,7 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
                 </div>
 
                 <div>
-                  <label htmlFor="unstructured-notes" className="text-sm font-medium mb-2 block text-foreground">Notas sin estructurar</label>
+                  <label htmlFor="unstructured-notes" className="text-sm font-medium mb-2 block text-slate-900 dark:text-slate-50">Notas sin estructurar</label>
                   <Textarea
                     id="unstructured-notes"
                     placeholder="Pega aquí tus notas de sesión para que la IA las estructure..."
@@ -243,8 +243,8 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
                   )}
                 </Button>
 
-                <div className="bg-muted p-4 rounded-lg min-h-[100px]">
-                  <h4 className="font-medium mb-2 text-foreground">Resultado Generado:</h4>
+                <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg min-h-[100px]">
+                  <h4 className="font-medium mb-2 text-slate-900 dark:text-slate-50">Resultado Generado:</h4>
                   {isStructuring ? (
                      <div className="space-y-2">
                         <div className="h-4 bg-slate-200 rounded animate-pulse"></div>
@@ -254,7 +254,7 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
                   ) : structuredResult ? (
                     <pre className="whitespace-pre-wrap text-sm font-sans">{structuredResult}</pre>
                   ) : (
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-sm text-slate-600 dark:text-slate-300">
                       <p className="italic">El resultado generado por la IA aparecerá aquí...</p>
                     </div>
                   )}

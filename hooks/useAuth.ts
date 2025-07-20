@@ -43,8 +43,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Check if user is authenticated
   const checkAuthStatus = useCallback(async () => {
-    setState(prev => ({ ...prev, isLoading: true }))
-    
     try {
       const user = tokenManager.getUser()
       const accessToken = tokenManager.getAccessToken()

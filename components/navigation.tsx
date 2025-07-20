@@ -23,7 +23,7 @@ export function Navigation() {
   }
 
   return (
-    <nav className="bg-card shadow-sm border-b sticky top-0 z-50">
+    <nav className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
@@ -43,22 +43,22 @@ export function Navigation() {
                   </SheetHeader>
                   <Link href="/" className="flex items-center gap-2 mb-6">
                     <Image src="/logo.png" alt="SessAI Logo" width={40} height={40} />
-                    <span className="text-2xl font-bold">SessAI</span>
+                    <span className="text-2xl font-bold text-slate-900 dark:text-slate-50">SessAI</span>
                   </Link>
                   
                   {/* User info in mobile menu */}
                   {user && (
-                    <div className="p-3 bg-gray-50 rounded-lg mb-4">
+                    <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg mb-4">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
                           <AvatarImage src={user.profile.photo} alt={user.name} />
                           <AvatarFallback>{getUserInitials(user.name)}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
+                          <p className="text-sm font-medium text-slate-900 dark:text-slate-50 truncate">
                             {user.profile.firstName} {user.profile.lastName}
                           </p>
-                          <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
                         </div>
                       </div>
                     </div>
@@ -67,7 +67,7 @@ export function Navigation() {
                   <nav className="flex flex-col gap-1">
                     <SheetClose asChild>
                       <Link href="/patients" passHref>
-                        <Button variant="ghost" className="w-full flex items-center gap-3 justify-start text-base">
+                        <Button variant="ghost" className="w-full flex items-center gap-3 justify-start text-base text-slate-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20">
                           <Users className="h-5 w-5" />
                           Pacientes
                         </Button>
@@ -75,7 +75,7 @@ export function Navigation() {
                     </SheetClose>
                     <SheetClose asChild>
                       <Link href="/sessions/new" passHref>
-                        <Button variant="ghost" className="w-full flex items-center gap-3 justify-start text-base">
+                        <Button variant="ghost" className="w-full flex items-center gap-3 justify-start text-base text-slate-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20">
                           <ClipboardList className="h-5 w-5" />
                           Sesiones
                         </Button>
@@ -83,7 +83,7 @@ export function Navigation() {
                     </SheetClose>
                     <SheetClose asChild>
                       <Link href="/calendar" passHref>
-                        <Button variant="ghost" className="w-full flex items-center gap-3 justify-start text-base">
+                        <Button variant="ghost" className="w-full flex items-center gap-3 justify-start text-base text-slate-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20">
                           <Calendar className="h-5 w-5" />
                           Calendario
                         </Button>
@@ -91,7 +91,7 @@ export function Navigation() {
                     </SheetClose>
                     <SheetClose asChild>
                       <Link href="/ai-analysis" passHref>
-                        <Button variant="ghost" className="w-full flex items-center gap-3 justify-start text-base">
+                        <Button variant="ghost" className="w-full flex items-center gap-3 justify-start text-base text-slate-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20">
                           <BotMessageSquare className="h-5 w-5" />
                           Análisis IA
                         </Button>
@@ -100,7 +100,7 @@ export function Navigation() {
                     <RoleBasedRender allowedRoles={['admin']}>
                       <SheetClose asChild>
                         <Link href="/admin" passHref>
-                          <Button variant="ghost" className="w-full flex items-center gap-3 justify-start text-base">
+                          <Button variant="ghost" className="w-full flex items-center gap-3 justify-start text-base text-slate-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20">
                             <Settings className="h-5 w-5" />
                             Centro de Control
                           </Button>
@@ -115,7 +115,7 @@ export function Navigation() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
               <Image src="/logo.png" alt="SessAI Logo" width={40} height={40} className="h-7 w-7 md:h-8 md:w-8" />
-              <span className="text-xl md:text-2xl font-bold">SessAI</span>
+              <span className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-50">SessAI</span>
             </Link>
           </div>
 
@@ -123,32 +123,32 @@ export function Navigation() {
           <AuthenticatedOnly>
             <div className="hidden md:flex items-center space-x-1">
               <Link href="/patients">
-                <Button variant="ghost" className="flex items-center gap-2">
+                <Button variant="ghost" className="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors">
                   <Users className="h-4 w-4" />
                   Pacientes
                 </Button>
               </Link>
               <Link href="/sessions/new">
-                <Button variant="ghost" className="flex items-center gap-2">
+                <Button variant="ghost" className="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors">
                   <ClipboardList className="h-4 w-4" />
                   Nueva Sesión
                 </Button>
               </Link>
               <Link href="/calendar">
-                <Button variant="ghost" className="flex items-center gap-2">
+                <Button variant="ghost" className="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors">
                   <Calendar className="h-4 w-4" />
                   Calendario
                 </Button>
               </Link>
               <Link href="/ai-analysis">
-                <Button variant="ghost" className="flex items-center gap-2">
+                <Button variant="ghost" className="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors">
                   <BotMessageSquare className="h-4 w-4" />
                   Análisis IA
                 </Button>
               </Link>
               <RoleBasedRender allowedRoles={['admin']}>
                 <Link href="/admin">
-                  <Button variant="ghost" className="flex items-center gap-2">
+                  <Button variant="ghost" className="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors">
                     <Settings className="h-4 w-4" />
                     Centro de Control
                   </Button>
@@ -196,7 +196,7 @@ export function Navigation() {
                       </AvatarFallback>
                     </Avatar>
                     <div className="hidden sm:block text-left">
-                      <p className="text-sm font-medium">
+                      <p className="text-sm font-medium text-slate-900 dark:text-slate-50">
                         {user?.profile.firstName || user?.name}
                       </p>
                       <div className="flex items-center gap-1">
@@ -217,10 +217,10 @@ export function Navigation() {
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">
+                      <p className="text-sm font-medium leading-none text-slate-900 dark:text-slate-50">
                         {user?.profile.firstName} {user?.profile.lastName}
                       </p>
-                      <p className="text-xs leading-none text-muted-foreground">
+                      <p className="text-xs leading-none text-slate-500 dark:text-slate-400">
                         {user?.email}
                       </p>
                     </div>

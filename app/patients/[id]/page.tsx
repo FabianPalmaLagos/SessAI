@@ -114,7 +114,7 @@ export default function PatientDetailPage() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-muted-foreground">Cargando información del paciente...</p>
+          <p className="text-slate-600 dark:text-slate-300">Cargando información del paciente...</p>
         </div>
       </div>
     )
@@ -150,7 +150,7 @@ export default function PatientDetailPage() {
                 {patient.status}
               </Badge>
             </h1>
-            <p className="text-muted-foreground">Ficha completa del paciente y historial clínico</p>
+            <p className="text-slate-600 dark:text-slate-300">Ficha completa del paciente y historial clínico</p>
           </div>
           <div className="flex gap-2">
             <Link href={`/sessions/new?patientId=${patient.id}`}>
@@ -182,11 +182,11 @@ export default function PatientDetailPage() {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-medium text-muted-foreground">RUT</label>
+                      <label className="text-sm font-medium text-slate-600 dark:text-slate-300">RUT</label>
                       <p className="text-foreground">{patient.rut}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-muted-foreground">Fecha de Nacimiento</label>
+                      <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Fecha de Nacimiento</label>
                       <p className="text-foreground">{patient.birthDate} ({calculateAge(patient.birthDate)} años)</p>
                     </div>
                   </div>
@@ -195,11 +195,11 @@ export default function PatientDetailPage() {
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      <Mail className="h-4 w-4 text-slate-600 dark:text-slate-300" />
                       <span className="text-foreground">{patient.email}</span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Phone className="h-4 w-4 text-muted-foreground" />
+                      <Phone className="h-4 w-4 text-slate-600 dark:text-slate-300" />
                       <span className="text-foreground">{patient.phone}</span>
                     </div>
                   </div>
@@ -207,7 +207,7 @@ export default function PatientDetailPage() {
                   <Separator />
 
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Dirección</label>
+                    <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Dirección</label>
                     <p className="text-foreground">{patient.address}</p>
                   </div>
                 </CardContent>
@@ -223,15 +223,15 @@ export default function PatientDetailPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Nombre</label>
+                    <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Nombre</label>
                     <p className="text-foreground">{patient.emergencyContact.name}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Relación</label>
+                    <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Relación</label>
                     <p className="text-foreground">{patient.emergencyContact.relationship}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Teléfono</label>
+                    <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Teléfono</label>
                     <p className="text-foreground">{patient.emergencyContact.phone}</p>
                   </div>
                 </CardContent>
@@ -249,22 +249,22 @@ export default function PatientDetailPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-primary">{patient.totalSessions}</div>
-                      <div className="text-sm text-muted-foreground">Sesiones Totales</div>
+                      <div className="text-sm text-slate-600 dark:text-slate-300">Sesiones Totales</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold text-green-600">{patient.lastSession}</div>
-                      <div className="text-sm text-muted-foreground">Última Sesión</div>
+                      <div className="text-sm text-slate-600 dark:text-slate-300">Última Sesión</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold text-purple-600">6 meses</div>
-                      <div className="text-sm text-muted-foreground">Tiempo en Tratamiento</div>
+                      <div className="text-sm text-slate-600 dark:text-slate-300">Tiempo en Tratamiento</div>
                     </div>
                   </div>
 
                   <Separator className="my-4" />
 
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Notas Clínicas</label>
+                    <label className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-2 block">Notas Clínicas</label>
                     <p className="text-foreground leading-relaxed">{patient.notes}</p>
                   </div>
                 </CardContent>
@@ -323,7 +323,7 @@ export default function PatientDetailPage() {
                   <CardContent>
                     <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-foreground mb-2">No hay sesiones registradas</h3>
-                    <p className="text-muted-foreground mb-4">Comienza registrando la primera sesión con este paciente</p>
+                    <p className="text-slate-600 dark:text-slate-300 mb-4">Comienza registrando la primera sesión con este paciente</p>
                     <Link href={`/sessions/new?patientId=${patient.id}`}>
                       <Button>Registrar Primera Sesión</Button>
                     </Link>
@@ -346,7 +346,7 @@ export default function PatientDetailPage() {
                 <div className="text-center py-12">
                   <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-foreground mb-2">No hay informes generados</h3>
-                  <p className="text-muted-foreground mb-4">Los informes aparecerán aquí cuando se generen con IA</p>
+                  <p className="text-slate-600 dark:text-slate-300 mb-4">Los informes aparecerán aquí cuando se generen con IA</p>
                   <Button variant="outline">
                     <Brain className="h-4 w-4 mr-2" />
                     Generar Informe IA

@@ -87,37 +87,37 @@ export default function LoginPage() {
   // Show loading state while checking authentication
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400"></div>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-primary"></div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         {/* Logo and Header */}
         <div className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="h-12 w-12 bg-blue-600 dark:bg-blue-500 rounded-lg flex items-center justify-center">
+            <div className="h-12 w-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-blue">
               <LogIn className="h-6 w-6 text-white" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Iniciar Sesión</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <h1 className="text-display-md text-text-primary">Iniciar Sesión</h1>
+          <p className="text-body-lg text-text-secondary mt-2">
             Accede a tu cuenta de SessAI
           </p>
         </div>
 
         {/* Demo Credentials Card */}
-        <Card className="border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950">
+        <Card className="border-blue-200 dark:border-blue-800 bg-gradient-card-hover">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-blue-800 dark:text-blue-300">
+            <CardTitle className="text-caption-lg text-blue-primary">
               🚀 Credenciales de Demo
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
-            <div className="text-sm text-blue-700 dark:text-blue-400 space-y-1">
+            <div className="text-body-sm text-blue-600 dark:text-blue-400 space-y-1">
               <p><strong>Email:</strong> admin@sessai.com</p>
               <p><strong>Contraseña:</strong> admin123</p>
             </div>
@@ -127,8 +127,8 @@ export default function LoginPage() {
         {/* Login Form */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl dark:text-gray-100">Bienvenido de vuelta</CardTitle>
-            <CardDescription className="dark:text-gray-400">
+            <CardTitle className="text-heading-lg">Bienvenido de vuelta</CardTitle>
+            <CardDescription>
               Ingresa tus credenciales para acceder
             </CardDescription>
           </CardHeader>
@@ -136,38 +136,38 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* Email Field */}
               <div className="space-y-2">
-                <Label htmlFor="email" className="dark:text-gray-200">Email</Label>
+                <Label htmlFor="email">Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="tu@email.com"
-                    className="pl-10 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
+                    className="pl-10 focus-ring"
                     {...register("email")}
                     disabled={isSubmitting}
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-sm text-red-600 dark:text-red-400">{errors.email.message}</p>
+                  <p className="text-body-sm text-error">{errors.email.message}</p>
                 )}
               </div>
 
               {/* Password Field */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="dark:text-gray-200">Contraseña</Label>
+                <Label htmlFor="password">Contraseña</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Tu contraseña"
-                    className="pr-10 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
+                    className="pr-10 focus-ring"
                     {...register("password")}
                     disabled={isSubmitting}
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                    className="absolute right-3 top-3 text-text-muted hover:text-text-secondary transition-colors"
                     onClick={() => setShowPassword(!showPassword)}
                     disabled={isSubmitting}
                   >
@@ -179,7 +179,7 @@ export default function LoginPage() {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-sm text-red-600 dark:text-red-400">{errors.password.message}</p>
+                  <p className="text-body-sm text-error">{errors.password.message}</p>
                 )}
               </div>
 
@@ -194,14 +194,14 @@ export default function LoginPage() {
                   />
                   <Label 
                     htmlFor="rememberMe" 
-                    className="text-sm font-normal cursor-pointer dark:text-gray-300"
+                    className="text-body-sm font-normal cursor-pointer"
                   >
                     Recordarme
                   </Label>
                 </div>
                 <Link 
                   href="/auth/forgot-password"
-                  className="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                  className="text-body-sm text-blue-primary hover:text-blue-hover transition-colors"
                 >
                   ¿Olvidaste tu contraseña?
                 </Link>
@@ -210,7 +210,7 @@ export default function LoginPage() {
               {/* Error Message */}
               {error && (
                 <Alert className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950/50">
-                  <AlertDescription className="text-red-700 dark:text-red-400">
+                  <AlertDescription className="text-error">
                     {error}
                   </AlertDescription>
                 </Alert>
@@ -240,11 +240,11 @@ export default function LoginPage() {
 
         {/* Register Link */}
         <div className="text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-body-sm text-text-secondary">
             ¿No tienes una cuenta?{" "}
             <Link 
               href="/auth/register"
-              className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+              className="text-blue-primary hover:text-blue-hover font-medium transition-colors"
             >
               Regístrate aquí
             </Link>
@@ -252,14 +252,14 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <div className="text-center text-xs text-gray-500 dark:text-gray-400">
+        <div className="text-center text-caption-sm text-text-muted">
           <p>© 2024 SessAI. Todos los derechos reservados.</p>
           <div className="mt-1 space-x-2">
-            <Link href="/privacy" className="hover:text-gray-700 dark:hover:text-gray-300">
+            <Link href="/privacy" className="hover:text-text-secondary transition-colors">
               Privacidad
             </Link>
             <span>•</span>
-            <Link href="/terms" className="hover:text-gray-700 dark:hover:text-gray-300">
+            <Link href="/terms" className="hover:text-text-secondary transition-colors">
               Términos
             </Link>
           </div>

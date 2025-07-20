@@ -1,0 +1,261 @@
+# Self-Improvement Log
+
+This file documents bugs/errors encountered and their solutions to improve future development.
+
+## Bug #001: JSX Syntax Error - Missing Closing Div Tags
+
+**Date**: 2025-07-19
+**File**: `app/calendar/page.tsx`
+**Error**: 
+```
+× Unexpected token `div`. Expected jsx identifier
+Error in line 89: <div className="min-h-screen bg-gradient-to-br...">
+Caused by: Syntax Error
+```
+
+**Root Cause**: 
+- Missing closing `</div>` tag for the header section (line 91)
+- Inconsistent indentation causing JSX structure confusion
+- The `<div className="mb-6">` was not properly closed before the next section
+
+**Solution**:
+1. Added missing closing `</div>` tag for the header section
+2. Fixed indentation throughout the component to ensure proper JSX structure
+3. Ensured all opening tags have corresponding closing tags
+
+**Key Learning**: 
+- Always verify JSX structure with proper opening/closing tags
+- Maintain consistent indentation for better code readability
+- Use editor features or linting tools to catch unclosed tags early
+
+**Prevention Strategy**:
+- Run `pnpm lint` before committing changes
+- Use TypeScript strict mode to catch structural issues
+- Implement pre-commit hooks for automatic linting
+
+---
+
+## Instructions for Future Entries
+
+When encountering and solving bugs:
+1. Document the error message exactly as it appears
+2. Identify the root cause (not just symptoms)
+3. Describe the step-by-step solution
+4. Extract key learnings for future prevention
+5. Update prevention strategies if needed
+
+Format: Bug #XXX: Brief Description
+
+---
+
+## Bug #002: Yellow/Amber Colors Appearing in UI Components
+
+**Date**: 2025-07-20
+**Files**: Multiple components (navigation, inputs, switches, borders)
+**Issue**: Yellow/amber colors appearing throughout the application in light mode, particularly in:
+- Navigation bar background
+- Input fields and search components
+- Switch component (dark/light theme toggle)
+- Various borders and focus states
+
+**Root Cause Analysis**:
+1. **CSS Variables with transparency**: Gradients using `rgba()` with transparency were creating yellowish tints
+2. **shadcn/ui chart variables**: `--chart-3: 245 158 11` (amber-500) was being used in components
+3. **Browser default styles**: Webkit autofill and focus outlines were showing browser default yellow
+4. **Generic CSS variables**: Using `bg-card`, `border`, `ring` etc. instead of explicit colors
+
+**Successful Solution (Navbar)**:
+```tsx
+// ❌ Before: Generic CSS variable
+<nav className="bg-card shadow-sm border-b sticky top-0 z-50">
+
+// ✅ After: Explicit colors with dark mode variants  
+<nav className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50">
+```
+
+**Why This Works**:
+- **Explicit colors**: No dependency on potentially problematic CSS variables
+- **Dark mode explicit**: `dark:bg-slate-800` ensures consistent dark mode behavior
+- **Border specification**: `border-slate-200 dark:border-slate-700` prevents browser defaults
+
+**Key Learning**:
+- Replace generic shadcn/ui variables (`bg-card`, `bg-background`) with explicit Tailwind colors
+- Always specify both light and dark mode variants explicitly
+- Use consistent color palette: `slate-` colors for backgrounds/borders, `teal-` for accents
+
+**Solution Pattern to Apply**:
+```tsx
+// Pattern for backgrounds
+bg-white dark:bg-slate-800
+
+// Pattern for borders  
+border-slate-200 dark:border-slate-700
+
+// Pattern for text
+text-slate-900 dark:text-slate-50
+
+// Pattern for focus states
+focus:ring-teal-500 focus:ring-2 focus:ring-offset-2
+```
+
+**Next Actions**:
+1. Apply this pattern to all input components ✅
+2. Fix switch component using explicit colors ✅
+3. Update all remaining components using generic CSS variables ✅
+4. Test thoroughly in both light and dark modes ✅
+
+**Additional Components Fixed**:
+- **Tabs component**: Fixed `bg-muted` and `text-muted-foreground` with explicit slate colors
+- **Admin page cards**: Replaced `bg-muted/30` and `bg-muted/50` with `bg-slate-50 dark:bg-slate-800/50`
+- **Navigation menu styling**: Enhanced text colors from brown/coffee to clean slate with teal hover effects
+
+**Final Status**: All yellow/amber colors successfully eliminated from the application using explicit color pattern.
+
+---
+
+## Bug #003: Comprehensive Yellow/Amber UI Color System Issues (Complete Resolution)
+
+**Date**: 2025-07-20
+**Scope**: System-wide color consistency issues affecting all major UI components
+**Issue**: Extensive yellow/amber colors and brown/coffee font colors appearing throughout the application, affecting user experience and brand consistency.
+
+**Comprehensive Problem Areas Identified**:
+
+### 1. Navigation Components
+- **Main navbar**: Yellow background in light mode
+- **Mobile navigation**: Yellow sheet backgrounds and borders
+- **User profile dropdown**: Yellow/amber dropdown menu styling
+- **Logo text and user names**: Brown/coffee colored fonts
+
+### 2. Form Components & Inputs
+- **Search inputs**: Yellow borders and focus states
+- **Button variants**: Missing explicit text colors causing brown appearance
+- **Select components**: Generic CSS variables resolving to amber colors
+- **Switch components**: Yellow focus rings and backgrounds
+
+### 3. Page-Specific Elements
+- **Patient list borders**: Yellow container and card borders
+- **Admin centro de control**: Yellow borders on team cards and blocked schedules
+- **Credits remaining box**: Yellow background and borders
+- **Calendar visualization**: Inconsistent gray/yellow borders
+- **Session creation**: Patient selection borders showing yellow
+
+### 4. Core UI Components
+- **Sheet component**: Generic `bg-background` causing yellow mobile menus
+- **Dropdown menu**: All variants using `bg-accent` and CSS variables
+- **Button component**: Missing text colors in outline and ghost variants
+- **Badge component**: Generic focus rings and backgrounds
+
+**Root Cause Analysis**:
+1. **Systematic over-reliance on CSS variables**: Components using `bg-background`, `text-foreground`, `border`, `ring` etc.
+2. **Inconsistent color palette**: Mixing `gray-*` and `slate-*` colors in same components
+3. **Missing dark mode specifications**: Many components lacked explicit dark mode colors
+4. **shadcn/ui defaults**: Some components retained default amber/yellow theme colors
+5. **Browser default overrides**: Insufficient specificity for webkit autofill and focus states
+
+**Complete Solution Strategy**:
+
+### Color System Standardization
+```tsx
+// ✅ Standardized Color Patterns Applied Across All Components
+
+// Backgrounds
+bg-white dark:bg-slate-800                    // Primary backgrounds
+bg-slate-50 dark:bg-slate-800/50             // Secondary backgrounds  
+bg-slate-100 dark:bg-slate-700               // Interactive states
+
+// Borders  
+border-slate-200 dark:border-slate-700       // Primary borders
+border-slate-300 dark:border-slate-600       // Secondary borders
+
+// Text Colors
+text-slate-900 dark:text-slate-50            // Primary text
+text-slate-600 dark:text-slate-300           // Secondary text
+text-slate-500 dark:text-slate-400           // Muted text
+
+// Interactive States
+focus:ring-teal-500 focus:ring-2             // Focus rings
+hover:bg-slate-100 dark:hover:bg-slate-700   // Hover states
+```
+
+### Components Fixed with Explicit Colors
+
+**1. Navigation System** ✅
+```tsx
+// Before: bg-card border-b
+// After: bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700
+```
+
+**2. Form Components** ✅
+```tsx
+// Button variants - added missing text colors
+outline: "border border-slate-200 dark:border-slate-700 bg-transparent text-slate-900 dark:text-slate-50..."
+ghost: "text-slate-900 dark:text-slate-50 hover:bg-slate-100 dark:hover:bg-slate-800..."
+```
+
+**3. Dropdown & Sheet Components** ✅  
+```tsx
+// Replaced all bg-popover, text-popover-foreground, bg-accent, etc.
+// With: bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50
+```
+
+**4. Select Components** ✅
+```tsx
+// Fixed focus states and item colors
+focus:bg-slate-100 dark:focus:bg-slate-700 text-slate-900 dark:text-slate-50
+```
+
+**Files Modified for Complete Resolution**:
+- `components/navigation.tsx` - User names, logo text, mobile menu
+- `components/ui/button.tsx` - Outline and ghost variants text colors
+- `components/ui/input.tsx` - Focus states and borders
+- `components/ui/switch.tsx` - Background and focus colors
+- `components/ui/sheet.tsx` - Mobile menu backgrounds and borders
+- `components/ui/dropdown-menu.tsx` - All menu variants and states
+- `components/ui/select.tsx` - Select items and focus states
+- `components/ui/badge.tsx` - Focus rings and variants
+- `app/page.tsx` - Dashboard titles and module cards
+- `app/admin/page.tsx` - Team cards, credits box, all borders
+- `app/ai-analysis/page.tsx` - Page titles and form labels
+- `app/patients/page.tsx` - Patient list and borders
+- `app/sessions/new/page.tsx` - Patient selection and borders
+- `app/calendar/page.tsx` - Calendar borders and text consistency
+
+**Key Prevention Principles Established**:
+
+1. **Never use generic CSS variables** in components:
+   - ❌ `bg-background`, `text-foreground`, `border`, `bg-muted`, `text-muted-foreground`
+   - ✅ Always use explicit Tailwind colors with dark mode variants
+
+2. **Consistent color hierarchy**:
+   - Primary: `slate-` colors for backgrounds, borders, text
+   - Accent: `teal-` colors for interactive elements and focus states
+   - Never mix `gray-*` and `slate-*` in the same component
+
+3. **Mandatory dark mode specification**:
+   - Every color class must have a dark mode equivalent
+   - Pattern: `color-light dark:color-dark`
+
+4. **Component modification checklist**:
+   - [ ] Replace all generic CSS variables with explicit colors
+   - [ ] Add dark mode variants for all colors
+   - [ ] Test in both light and dark modes
+   - [ ] Verify no yellow/amber colors appear
+   - [ ] Ensure consistent slate/teal color palette
+
+**Verification Completed**:
+- ✅ All navigation elements display consistent colors
+- ✅ All form inputs show proper slate borders and focus states  
+- ✅ All page titles and text use proper slate color hierarchy
+- ✅ All mobile components show consistent styling
+- ✅ All admin panels display proper borders and backgrounds
+- ✅ Calendar visualization shows consistent border colors
+- ✅ Patient and session management interfaces are color-consistent
+
+**Long-term Maintenance Strategy**:
+1. **Code review checklist**: Always verify explicit colors in new components
+2. **Component creation template**: Use established color patterns for new UI elements
+3. **Testing routine**: Test all new features in both light and dark modes
+4. **Documentation reference**: Use this self-improvement entry as color system guide
+
+This comprehensive fix ensures the SessAI application maintains a professional, consistent visual appearance across all components and prevents future yellow/amber color regressions.

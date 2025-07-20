@@ -125,7 +125,7 @@ export default function RegisterPage() {
   // Get password strength
   const getPasswordStrength = (password: string) => {
     if (password.length < 6) return { strength: "weak", color: "red" }
-    if (password.length < 10) return { strength: "medium", color: "yellow" }
+    if (password.length < 10) return { strength: "medium", color: "orange" }
     return { strength: "strong", color: "green" }
   }
 
@@ -401,14 +401,14 @@ export default function RegisterPage() {
                           <div
                             className={`h-2 rounded-full ${
                               passwordStrength.color === "red" ? "bg-red-500 w-1/3" :
-                              passwordStrength.color === "yellow" ? "bg-yellow-500 w-2/3" :
+                              passwordStrength.color === "orange" ? "bg-orange-500 w-2/3" :
                               "bg-green-500 w-full"
                             }`}
                           />
                         </div>
                         <span className={`text-xs font-medium ${
                           passwordStrength.color === "red" ? "text-red-600" :
-                          passwordStrength.color === "yellow" ? "text-yellow-600" :
+                          passwordStrength.color === "orange" ? "text-orange-600" :
                           "text-green-600"
                         }`}>
                           {passwordStrength.strength === "weak" ? "Débil" :

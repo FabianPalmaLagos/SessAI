@@ -53,13 +53,13 @@ export default function PatientsPage() {
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-gray-100">Gestión de Pacientes</h1>
-            <p className="text-slate-600 dark:text-gray-400">Administra fichas, historiales y búsqueda avanzada</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-50">Gestión de Pacientes</h1>
+            <p className="text-slate-600 dark:text-slate-300">Administra fichas, historiales y búsqueda avanzada</p>
           </div>
           <Link href="/">
             <Button variant="outline" className="w-full sm:w-auto">
@@ -72,12 +72,12 @@ export default function PatientsPage() {
         {/* Search Bar and Actions */}
         <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
           <div className="relative w-full sm:flex-grow">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-gray-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-400" />
             <Input
               placeholder="Buscar por nombre o RUT..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
+              className="pl-10 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 placeholder-slate-500 dark:placeholder-slate-400"
             />
           </div>
           <Link href="/patients/new" className="w-full sm:w-auto">
@@ -91,19 +91,19 @@ export default function PatientsPage() {
         {/* Patients Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPatients.map((patient) => (
-            <Card key={patient.id} className="hover:shadow-lg dark:hover:shadow-xl transition-shadow duration-200 dark:bg-gray-800/50 dark:border-gray-700">
+            <Card key={patient.id} className="hover:shadow-lg dark:hover:shadow-xl transition-shadow duration-200 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-gray-100">
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-50">
                     <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     {patient.name}
                   </CardTitle>
                   <Badge variant={patient.status === "Activo" ? "default" : "secondary"}>{patient.status}</Badge>
                 </div>
-                <CardDescription className="text-slate-600 dark:text-gray-400">RUT: {patient.rut}</CardDescription>
+                <CardDescription className="text-slate-600 dark:text-slate-300">RUT: {patient.rut}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3 text-sm text-slate-600 dark:text-gray-300">
+                <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
                   <div className="flex items-start gap-3">
                     <Mail className="h-4 w-4 mt-0.5" />
                     <span className="break-all">{patient.email}</span>
@@ -138,11 +138,11 @@ export default function PatientsPage() {
         </div>
 
         {filteredPatients.length === 0 && (
-          <Card className="text-center py-12 dark:bg-gray-800/50 dark:border-gray-700">
+          <Card className="text-center py-12 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50">
             <CardContent>
-              <User className="h-12 w-12 text-slate-400 dark:text-gray-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-gray-100 mb-2">No se encontraron pacientes</h3>
-              <p className="text-slate-600 dark:text-gray-400 mb-4">Intenta con otros términos de búsqueda o agrega un nuevo paciente</p>
+              <User className="h-12 w-12 text-slate-400 dark:text-slate-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-50 mb-2">No se encontraron pacientes</h3>
+              <p className="text-slate-600 dark:text-slate-300 mb-4">Intenta con otros términos de búsqueda o agrega un nuevo paciente</p>
               <Link href="/patients/new">
                 <Button>Agregar Primer Paciente</Button>
               </Link>

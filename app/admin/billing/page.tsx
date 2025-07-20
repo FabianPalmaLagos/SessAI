@@ -49,7 +49,7 @@ export default function BillingPage() {
   const usedPercentage = (creditUsage.used / creditUsage.total) * 100;
 
   return (
-    <div className="min-h-screen bg-muted/40">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto p-4 md:p-6 lg:p-8">
         <div className="mb-6">
           <Link href="/admin">
@@ -61,7 +61,7 @@ export default function BillingPage() {
           <h1 className="text-3xl font-bold text-foreground">
             Control de Gastos y Consumo de IA
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-slate-600 dark:text-slate-300">
             Monitoriza el uso de créditos, revisa tu historial y gestiona tu plan.
           </p>
         </div>
@@ -87,7 +87,7 @@ export default function BillingPage() {
                   <span>{creditUsage.used.toLocaleString()} / {creditUsage.total.toLocaleString()}</span>
                 </div>
                 <Progress value={usedPercentage} aria-label={`${usedPercentage}% de créditos usados`} />
-                 <p className="text-xs text-muted-foreground pt-1">
+                 <p className="text-xs text-slate-600 dark:text-slate-300 pt-1">
                   Has utilizado el {usedPercentage.toFixed(1)}% de tus créditos mensuales.
                 </p>
               </div>
@@ -100,7 +100,7 @@ export default function BillingPage() {
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold">{creditUsage.used.toLocaleString()}</p>
-              <p className="text-sm text-muted-foreground">créditos consumidos</p>
+              <p className="text-sm text-slate-600 dark:text-slate-300">créditos consumidos</p>
             </CardContent>
           </Card>
           <Card>
@@ -110,7 +110,7 @@ export default function BillingPage() {
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold">~42.7</p>
-              <p className="text-sm text-muted-foreground">créditos por sesión</p>
+              <p className="text-sm text-slate-600 dark:text-slate-300">créditos por sesión</p>
             </CardContent>
           </Card>
         </div>
@@ -153,15 +153,15 @@ export default function BillingPage() {
                                     <div className="rounded-lg border bg-background p-2 shadow-sm">
                                         <div className="grid grid-cols-2 gap-2">
                                             <div className="flex flex-col">
-                                            <span className="text-[0.70rem] uppercase text-muted-foreground">
+                                            <span className="text-[0.70rem] uppercase text-slate-600 dark:text-slate-300">
                                                 Fecha
                                             </span>
-                                            <span className="font-bold text-muted-foreground">
+                                            <span className="font-bold text-slate-600 dark:text-slate-300">
                                                 {format(new Date(label), "d 'de' MMMM, yyyy", { locale: es })}
                                             </span>
                                             </div>
                                             <div className="flex flex-col">
-                                            <span className="text-[0.70rem] uppercase text-muted-foreground">
+                                            <span className="text-[0.70rem] uppercase text-slate-600 dark:text-slate-300">
                                                 Créditos
                                             </span>
                                             <span className="font-bold text-foreground">
@@ -198,7 +198,7 @@ export default function BillingPage() {
                       <TableRow key={item.id}>
                         <TableCell>
                           <div className="font-medium">{item.type}</div>
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-xs text-slate-600 dark:text-slate-300">
                              {format(new Date(item.date), "dd/MM/yyyy HH:mm")}
                           </div>
                         </TableCell>

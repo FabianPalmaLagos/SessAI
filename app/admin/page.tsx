@@ -247,17 +247,17 @@ export default function AdminPage() {
   const dayNames = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
                 <Settings className="h-7 w-7 sm:h-8 sm:w-8 text-orange-600" />
                 Centro de Control
               </h1>
-              <p className="text-muted-foreground">Administración de la plataforma y configuración avanzada</p>
+              <p className="text-slate-600 dark:text-slate-300">Administración de la plataforma y configuración avanzada</p>
             </div>
             <Link href="/">
               <Button variant="outline" className="w-full sm:w-auto">
@@ -299,7 +299,7 @@ export default function AdminPage() {
                 </CardHeader>
                 <CardContent>
                   {isAddingTherapist && (
-                    <div className="border rounded-lg p-4 mb-4 bg-muted/50">
+                    <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-4 bg-slate-50 dark:bg-slate-800/50">
                       <h3 className="font-semibold mb-3">Nuevo Terapeuta</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -357,13 +357,13 @@ export default function AdminPage() {
 
                   <div className="space-y-4">
                     {therapists.map((therapist) => (
-                      <div key={therapist.id} className="border rounded-lg p-4">
+                      <div key={therapist.id} className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-white dark:bg-slate-800">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                           <div className="flex items-start gap-4">
                             <div>
-                              <h3 className="font-semibold">{therapist.name}</h3>
-                              <p className="text-sm text-muted-foreground">{therapist.email}</p>
-                              <p className="text-sm text-muted-foreground">{therapist.specialty}</p>
+                              <h3 className="font-semibold text-slate-900 dark:text-slate-50">{therapist.name}</h3>
+                              <p className="text-sm text-slate-600 dark:text-slate-300">{therapist.email}</p>
+                              <p className="text-sm text-slate-600 dark:text-slate-300">{therapist.specialty}</p>
                             </div>
                             <div className="flex flex-col sm:flex-row gap-2">
                               <Badge variant={therapist.status === 'active' ? 'default' : 'secondary'}>
@@ -506,7 +506,7 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent>
                 {isAddingBlockedTime && (
-                  <div className="border rounded-lg p-4 mb-4 bg-muted/50">
+                  <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-4 bg-slate-50 dark:bg-slate-800/50">
                     <h3 className="font-semibold mb-3">Nuevo Bloqueo</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
@@ -593,11 +593,11 @@ export default function AdminPage() {
                   {blockedTimes.map((blocked) => {
                     const therapist = therapists.find(t => t.id === blocked.therapistId);
                     return (
-                      <div key={blocked.id} className="border rounded-lg p-4">
+                      <div key={blocked.id} className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-white dark:bg-slate-800">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                           <div>
-                            <h3 className="font-semibold">{blocked.reason}</h3>
-                            <p className="text-sm text-muted-foreground">
+                            <h3 className="font-semibold text-slate-900 dark:text-slate-50">{blocked.reason}</h3>
+                            <p className="text-sm text-slate-600 dark:text-slate-300">
                               {therapist?.name} - {blocked.date} ({blocked.startTime} - {blocked.endTime})
                             </p>
                           </div>
@@ -632,10 +632,10 @@ export default function AdminPage() {
               <CardContent>
                 <div className="space-y-4">
                   {therapists.map(therapist => (
-                    <div key={therapist.id} className="border rounded-lg p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div key={therapist.id} className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-white dark:bg-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                       <div>
-                        <h3 className="font-semibold">{therapist.name}</h3>
-                        <p className="text-sm text-muted-foreground">{therapist.specialty}</p>
+                        <h3 className="font-semibold text-slate-900 dark:text-slate-50">{therapist.name}</h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-300">{therapist.specialty}</p>
                       </div>
                       <div>
                         <Label htmlFor={`role-${therapist.id}`} className="sr-only">Rol de {therapist.name}</Label>
@@ -681,7 +681,7 @@ export default function AdminPage() {
                           <SelectItem value="advanced">Avanzado (Mayor costo, mayor precisión)</SelectItem>
                         </SelectContent>
                       </Select>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
                         El modelo seleccionado se usará para transcripciones y análisis.
                       </p>
                     </div>
@@ -715,7 +715,7 @@ export default function AdminPage() {
                     <Separator className="my-6" />
                     <div className="space-y-2">
                       <Label htmlFor="defaultView" className="text-base font-semibold">Vista por Defecto</Label>
-                       <p className="text-sm text-muted-foreground">
+                       <p className="text-sm text-slate-600 dark:text-slate-300">
                          Elige la vista inicial para el calendario de la plataforma.
                        </p>
                        <Select
@@ -740,7 +740,7 @@ export default function AdminPage() {
 
               {/* Consumo y Facturación */}
               <div className="lg:col-span-1">
-                <Card className="bg-muted/30">
+                <Card className="bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <CreditCard className="h-5 w-5 text-primary" />
@@ -749,9 +749,9 @@ export default function AdminPage() {
                     <CardDescription>Monitorea tu uso de créditos de IA.</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-center p-4 border rounded-lg bg-background">
-                      <p className="text-sm text-muted-foreground">Créditos restantes</p>
-                      <p className="text-3xl font-bold">1,250</p>
+                    <div className="text-center p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800">
+                      <p className="text-sm text-slate-600 dark:text-slate-300">Créditos restantes</p>
+                      <p className="text-3xl font-bold text-slate-900 dark:text-slate-50">1,250</p>
                     </div>
                     <Link href="/admin/billing" className="w-full">
                       <Button className="w-full mt-4">

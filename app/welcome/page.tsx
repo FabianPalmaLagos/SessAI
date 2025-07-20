@@ -46,7 +46,7 @@ export default function WelcomePage() {
       description: "Protección de datos de nivel empresarial con cifrado end-to-end."
     },
     {
-      icon: <Zap className="h-8 w-8 text-yellow-600" />,
+      icon: <Zap className="h-8 w-8 text-orange-600" />,
       title: "Automatización",
       description: "Automatiza tareas repetitivas y enfócate en lo que realmente importa: tus pacientes."
     }

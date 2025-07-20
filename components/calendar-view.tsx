@@ -262,7 +262,7 @@ export function CalendarView({ sessions: initialSessions, therapists, patients }
         }
         
         .event-status-no-show {
-          border-left: 3px solid #f59e0b;
+          border-left: 3px solid #ea580c;
           opacity: 0.8;
         }
         

@@ -180,7 +180,7 @@ export default function VerifyEmailPage() {
           {/* Header */}
           <div className="text-center">
             <div className="flex justify-center mb-4">
-              <div className={`h-12 w-12 ${isExpired ? 'bg-yellow-600' : 'bg-red-600'} rounded-lg flex items-center justify-center`}>
+              <div className={`h-12 w-12 ${isExpired ? 'bg-orange-600' : 'bg-red-600'} rounded-lg flex items-center justify-center`}>
                 {isExpired ? (
                   <AlertTriangle className="h-6 w-6 text-white" />
                 ) : (
@@ -202,7 +202,7 @@ export default function VerifyEmailPage() {
           {/* Error Card */}
           <Card>
             <CardHeader>
-              <CardTitle className={`text-xl text-center ${isExpired ? 'text-yellow-700' : 'text-red-700'}`}>
+              <CardTitle className={`text-xl text-center ${isExpired ? 'text-orange-700' : 'text-red-700'}`}>
                 {isExpired ? 'Enlace Caducado' : 'Verificación Fallida'}
               </CardTitle>
               <CardDescription className="text-center">
@@ -215,8 +215,8 @@ export default function VerifyEmailPage() {
             <CardContent className="space-y-4">
               {/* Error message */}
               {error && (
-                <Alert className={`border-${isExpired ? 'yellow' : 'red'}-200 bg-${isExpired ? 'yellow' : 'red'}-50`}>
-                  <AlertDescription className={`text-${isExpired ? 'yellow' : 'red'}-700`}>
+                <Alert className={`border-${isExpired ? 'orange' : 'red'}-200 bg-${isExpired ? 'orange' : 'red'}-50`}>
+                  <AlertDescription className={`text-${isExpired ? 'orange' : 'red'}-700`}>
                     {error}
                   </AlertDescription>
                 </Alert>
@@ -224,8 +224,8 @@ export default function VerifyEmailPage() {
 
               <div className="text-center space-y-4">
                 {isExpired && (
-                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-sm text-yellow-800">
+                  <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                    <p className="text-sm text-orange-800">
                       Los enlaces de verificación son válidos por 24 horas por seguridad.
                     </p>
                   </div>

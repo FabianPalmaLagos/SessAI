@@ -30,7 +30,7 @@ const EditorToolbar = ({ editor }: { editor: Editor | null }) => {
   }
 
   return (
-    <div className="border border-input bg-transparent rounded-t-md p-1 flex items-center flex-wrap gap-1">
+    <div className="border border-slate-200 dark:border-slate-700 bg-transparent rounded-t-md p-1 flex items-center flex-wrap gap-1">
       <Toggle
         size="sm"
         pressed={editor.isActive("bold")}
@@ -93,7 +93,7 @@ export function RichTextEditor({ value, onChange }: Props) {
     editorProps: {
       attributes: {
         class:
-          "prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none min-h-[150px] w-full rounded-b-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+          "prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none min-h-[150px] w-full rounded-b-md border border-slate-200 dark:border-slate-700 bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-slate-500 dark:placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-teal-500 disabled:cursor-not-allowed disabled:opacity-50",
       },
     },
   })
