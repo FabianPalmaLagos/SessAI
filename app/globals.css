@@ -75,7 +75,7 @@ body {
   .bg-gradient-card-hover { background: linear-gradient(135deg, rgba(20, 184, 166, 0.05) 0%, rgba(147, 51, 234, 0.05) 100%); }
   
   .hover-lift { @apply transition-all duration-200 ease-out; }
-  .hover-lift:hover { @apply -translate-y-1 shadow-lg; }
+  .hover-lift:hover { @apply shadow-lg; }
   
   .transition-smooth { @apply transition-all duration-300 ease-out; }
   .focus-ring { @apply focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2; }

@@ -223,7 +223,6 @@ export function CalendarView({ sessions: initialSessions, therapists, patients }
         }
         
         .fc .fc-event:hover {
-          transform: translateY(-1px);
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
           z-index: 10;
         }

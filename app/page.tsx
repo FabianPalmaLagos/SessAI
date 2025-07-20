@@ -274,7 +274,7 @@ function DashboardContent() {
 
                       <div className="flex items-center justify-between">
                         <span className="text-caption-md text-text-muted">{module.stats}</span>
-                        <ChevronRight className="w-4 h-4 text-text-muted group-hover:text-blue-primary group-hover:translate-x-1 transition-smooth" />
+                        <ChevronRight className="w-4 h-4 text-text-muted group-hover:text-blue-primary transition-smooth" />
                       </div>
                     </CardContent>
                   </Card>
