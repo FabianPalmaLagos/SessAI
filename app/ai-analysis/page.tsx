@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Brain, FileText, Download, Sparkles, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { PageHeaderSkeleton, FormSkeleton } from "@/components/ui/skeleton-loaders"
 
 export default function AIAnalysisPage() {
   const [selectedPatient, setSelectedPatient] = useState("")
@@ -17,6 +18,15 @@ export default function AIAnalysisPage() {
   const [instruction, setInstruction] = useState("")
   const [structuredResult, setStructuredResult] = useState("")
   const [isStructuring, setIsStructuring] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Simulate loading time
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1600)
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleGenerateReport = () => {
     setIsGenerating(true)
@@ -73,6 +83,47 @@ Durante el período analizado, la paciente ha mostrado una evolución positiva s
       setStructuredResult(result)
       setIsStructuring(false)
     }, 2500)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <PageHeaderSkeleton />
+          
+          {/* Tabs Skeleton */}
+          <div className="space-y-6">
+            <div className="flex space-x-1 bg-slate-200 dark:bg-slate-700 p-1 rounded-lg animate-pulse">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="h-8 w-32 bg-slate-300 dark:bg-slate-600 rounded animate-pulse" />
+              ))}
+            </div>
+            
+            {/* Tab Content Skeleton */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <div className="h-6 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                  <div className="h-4 w-64 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                </CardHeader>
+                <CardContent>
+                  <FormSkeleton />
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <div className="h-6 w-40 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

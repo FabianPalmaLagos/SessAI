@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   Users,
   Calendar,
@@ -26,10 +26,20 @@ import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import AuthGuard from "@/components/auth-guard"
 import { useAuth } from "@/hooks/useAuth"
+import { DashboardCardSkeleton, ModuleCardSkeleton, PageHeaderSkeleton } from "@/components/ui/skeleton-loaders"
 
 function DashboardContent() {
   const [searchQuery, setSearchQuery] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
   const { user } = useAuth()
+
+  // Simulate loading time
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 2000)
+    return () => clearTimeout(timer)
+  }, [])
 
   const metrics = [
     {
@@ -179,6 +189,30 @@ function DashboardContent() {
       type: "appointment",
     },
   ]
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+        <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <PageHeaderSkeleton />
+          
+          {/* Metrics Cards Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <DashboardCardSkeleton key={i} />
+            ))}
+          </div>
+
+          {/* Quick Actions Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <ModuleCardSkeleton key={i} />
+            ))}
+          </div>
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">

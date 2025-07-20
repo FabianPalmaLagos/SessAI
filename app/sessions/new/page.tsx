@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { ArrowLeft, Mic, Upload, Pause, Brain, User, Save, AlertCircle, FileText, Mail, Phone, Sparkles, Undo2, Search } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { PageHeaderSkeleton, PatientCardSkeleton, FormSkeleton } from "@/components/ui/skeleton-loaders"
 
 // Mock data para pacientes
 const mockPatients = [
@@ -80,6 +81,7 @@ export default function NewSessionPage() {
   const [patients] = useState<Patient[]>(mockPatients)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(initialPatient)
+  const [isLoading, setIsLoading] = useState(true)
   
   const [isRecording, setIsRecording] = useState(false)
   const [recordingTime, setRecordingTime] = useState(0)
@@ -126,6 +128,14 @@ export default function NewSessionPage() {
     }))
     router.push('/sessions/new', { scroll: false });
   }
+
+  // Simulate loading time
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1400)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     let interval: ReturnType<typeof setTimeout>
@@ -210,6 +220,40 @@ export default function NewSessionPage() {
   }
 
   const isFormValid = formData.patientId && formData.sessionContent.trim() !== ""
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <PageHeaderSkeleton />
+          
+          {/* Patient Selection Skeleton */}
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+              <div className="relative w-full">
+                <div className="h-10 bg-slate-200 dark:bg-slate-700 rounded-md animate-pulse" />
+              </div>
+            </div>
+            
+            {/* Patient List Skeleton */}
+            <div className="border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800">
+              <div className="max-h-[60vh] overflow-y-auto">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className={`p-4 flex justify-between items-center ${i > 0 ? 'border-t border-slate-200 dark:border-slate-700' : ''}`}>
+                    <div className="space-y-2">
+                      <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                      <div className="h-3 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                    </div>
+                    <div className="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">

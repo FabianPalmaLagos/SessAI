@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarView } from "@/components/calendar-view";
 import { mockSessions, mockTherapists, mockPatients } from "@/lib/mock-data";
@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
+import { CalendarSkeleton, DashboardCardSkeleton, PageHeaderSkeleton } from "@/components/ui/skeleton-loaders";
 
 export default function CalendarPage() {
   const [selectedTherapists, setSelectedTherapists] = useState<string[]>(
@@ -22,6 +23,15 @@ export default function CalendarPage() {
     'scheduled', 'completed', 'cancelled', 'no-show'
   ]);
   const [therapistSearchTerm, setTherapistSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate loading time
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1800)
+    return () => clearTimeout(timer)
+  }, [])
 
   // Filtrar terapeutas basado en el término de búsqueda
   const filteredTherapists = mockTherapists.filter(therapist =>
@@ -84,6 +94,58 @@ export default function CalendarPage() {
       s.date === new Date().toISOString().split('T')[0] && s.status === 'completed'
     ).length
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <PageHeaderSkeleton />
+          
+          {/* Stats Cards Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <DashboardCardSkeleton key={i} />
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-4 mt-6">
+            {/* Filters Panel Skeleton */}
+            <div className="lg:col-span-1">
+              <Card className="sticky top-4">
+                <CardHeader>
+                  <div className="h-6 w-20 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-3">
+                    <div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                    <div className="h-10 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                    <div className="h-32 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                  </div>
+                  <div className="space-y-3">
+                    <div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                    <div className="space-y-2">
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="h-6 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Calendar Skeleton */}
+            <div className="lg:col-span-3">
+              <Card>
+                <CardContent className="p-6">
+                  <CalendarSkeleton />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">

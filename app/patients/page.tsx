@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Search, Plus, User, Phone, Mail, Calendar, FileText, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { PatientCardSkeleton, PageHeaderSkeleton } from "@/components/ui/skeleton-loaders"
 
 const mockPatients = [
   {
@@ -47,10 +48,46 @@ const mockPatients = [
 export default function PatientsPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [patients] = useState(mockPatients)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Simulate loading time
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1500)
+    return () => clearTimeout(timer)
+  }, [])
 
   const filteredPatients = patients.filter(
     (patient) => patient.name.toLowerCase().includes(searchTerm.toLowerCase()) || patient.rut.includes(searchTerm),
   )
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <PageHeaderSkeleton />
+          
+          {/* Search Bar Skeleton */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+            <div className="relative w-full sm:flex-grow">
+              <div className="h-10 bg-slate-200 dark:bg-slate-700 rounded-md animate-pulse" />
+            </div>
+            <div className="w-full sm:w-auto">
+              <div className="h-10 w-32 bg-slate-200 dark:bg-slate-700 rounded-md animate-pulse" />
+            </div>
+          </div>
+
+          {/* Patients Grid Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <PatientCardSkeleton key={i} />
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">

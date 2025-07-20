@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -33,6 +33,7 @@ import {
 import Link from "next/link"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { PageHeaderSkeleton, FormSkeleton, ListSkeleton } from "@/components/ui/skeleton-loaders"
 
 interface Therapist {
   id: string
@@ -67,6 +68,7 @@ const calendarDisplayOptions = {
 };
 
 export default function AdminPage() {
+  const [isLoading, setIsLoading] = useState(true)
   const [therapists, setTherapists] = useState<Therapist[]>([
     {
       id: '1',
@@ -163,6 +165,14 @@ export default function AdminPage() {
   const [selectedTherapist, setSelectedTherapist] = useState<Therapist | null>(null)
   const [openTherapistSelector, setOpenTherapistSelector] = useState(false)
 
+  // Simulate loading time
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 2200)
+    return () => clearTimeout(timer)
+  }, [])
+
   const updateTherapistScheduleTime = (therapistId: string, day: string, field: 'start' | 'end', value: string) => {
     setTherapists(therapists.map(t =>
       t.id === therapistId
@@ -245,6 +255,31 @@ export default function AdminPage() {
 
   const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
   const dayNames = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <PageHeaderSkeleton />
+          
+          {/* Tabs Skeleton */}
+          <div className="space-y-6">
+            <div className="flex space-x-1 bg-slate-200 dark:bg-slate-700 p-1 rounded-lg animate-pulse">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-8 w-24 bg-slate-300 dark:bg-slate-600 rounded animate-pulse" />
+              ))}
+            </div>
+            
+            {/* Tab Content Skeleton */}
+            <div className="space-y-6">
+              <FormSkeleton />
+              <ListSkeleton count={3} />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
