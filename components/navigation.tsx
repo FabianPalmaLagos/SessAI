@@ -3,6 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useTheme } from "next-themes"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
@@ -16,6 +17,11 @@ import { AuthenticatedOnly, UnauthenticatedOnly, RoleBasedRender } from "@/compo
 export function Navigation() {
   const { setTheme, resolvedTheme } = useTheme()
   const { user, logout, isAuthenticated, isLoading } = useAuth()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Helper function to get user initials
   const getUserInitials = (name: string) => {
@@ -160,13 +166,15 @@ export function Navigation() {
           {/* Right side actions */}
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Theme Switch */}
-            <Switch
-              id="theme-switch"
-              checked={resolvedTheme === 'dark'}
-              onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
-              checkedIcon={<Moon className="h-3 w-3 text-white" />}
-              uncheckedIcon={<Sun className="h-3 w-3 text-black" />}
-            />
+            {mounted && (
+              <Switch
+                id="theme-switch"
+                checked={resolvedTheme === 'dark'}
+                onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                checkedIcon={<Moon className="h-3 w-3 text-white" />}
+                uncheckedIcon={<Sun className="h-3 w-3 text-black" />}
+              />
+            )}
 
             {/* Authentication Actions */}
             <UnauthenticatedOnly>

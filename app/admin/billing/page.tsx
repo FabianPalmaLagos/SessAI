@@ -165,7 +165,7 @@ export default function BillingPage() {
                                                 Créditos
                                             </span>
                                             <span className="font-bold text-foreground">
-                                                {payload[0].value.toLocaleString()}
+                                                {payload[0]?.value?.toLocaleString() || '0'}
                                             </span>
                                             </div>
                                         </div>

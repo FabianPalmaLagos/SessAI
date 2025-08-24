@@ -132,7 +132,7 @@ export default function PatientDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto p-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
@@ -143,7 +143,7 @@ export default function PatientDetailPage() {
             </Button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-3">
               <User className="h-8 w-8 text-primary" />
               {patient.name}
               <Badge variant={patient.status === "Activo" ? "default" : "secondary"}>
@@ -183,32 +183,32 @@ export default function PatientDetailPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-slate-600 dark:text-slate-300">RUT</label>
-                      <p className="text-foreground">{patient.rut}</p>
+                      <p className="text-slate-900 dark:text-slate-50">{patient.rut}</p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Fecha de Nacimiento</label>
-                      <p className="text-foreground">{patient.birthDate} ({calculateAge(patient.birthDate)} años)</p>
+                      <p className="text-slate-900 dark:text-slate-50">{patient.birthDate} ({calculateAge(patient.birthDate)} años)</p>
                     </div>
                   </div>
 
-                  <Separator />
+                  <Separator className="bg-slate-200 dark:bg-slate-700" />
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       <Mail className="h-4 w-4 text-slate-600 dark:text-slate-300" />
-                      <span className="text-foreground">{patient.email}</span>
+                      <span className="text-slate-900 dark:text-slate-50">{patient.email}</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <Phone className="h-4 w-4 text-slate-600 dark:text-slate-300" />
-                      <span className="text-foreground">{patient.phone}</span>
+                      <span className="text-slate-900 dark:text-slate-50">{patient.phone}</span>
                     </div>
                   </div>
 
-                  <Separator />
+                  <Separator className="bg-slate-200 dark:bg-slate-700" />
 
                   <div>
                     <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Dirección</label>
-                    <p className="text-foreground">{patient.address}</p>
+                    <p className="text-slate-900 dark:text-slate-50">{patient.address}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -224,15 +224,15 @@ export default function PatientDetailPage() {
                 <CardContent className="space-y-4">
                   <div>
                     <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Nombre</label>
-                    <p className="text-foreground">{patient.emergencyContact.name}</p>
+                    <p className="text-slate-900 dark:text-slate-50">{patient.emergencyContact.name}</p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Relación</label>
-                    <p className="text-foreground">{patient.emergencyContact.relationship}</p>
+                    <p className="text-slate-900 dark:text-slate-50">{patient.emergencyContact.relationship}</p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Teléfono</label>
-                    <p className="text-foreground">{patient.emergencyContact.phone}</p>
+                    <p className="text-slate-900 dark:text-slate-50">{patient.emergencyContact.phone}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -261,11 +261,11 @@ export default function PatientDetailPage() {
                     </div>
                   </div>
 
-                  <Separator className="my-4" />
+                  <Separator className="my-4 bg-slate-200 dark:bg-slate-700" />
 
                   <div>
                     <label className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-2 block">Notas Clínicas</label>
-                    <p className="text-foreground leading-relaxed">{patient.notes}</p>
+                    <p className="text-slate-900 dark:text-slate-50 leading-relaxed">{patient.notes}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -275,7 +275,7 @@ export default function PatientDetailPage() {
           <TabsContent value="sessions">
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-foreground">Historial de Sesiones</h3>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-50">Historial de Sesiones</h3>
                 <Link href={`/sessions/new?patientId=${patient.id}`}>
                   <Button size="sm">
                     <Plus className="h-4 w-4 mr-2" />
@@ -310,8 +310,8 @@ export default function PatientDetailPage() {
                   <CardContent>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-sm font-medium text-foreground">Contenido del Registro</label>
-                        <p className="text-foreground leading-relaxed">{session.content}</p>
+                        <label className="text-sm font-medium text-slate-900 dark:text-slate-50">Contenido del Registro</label>
+                        <p className="text-slate-900 dark:text-slate-50 leading-relaxed">{session.content}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -322,7 +322,7 @@ export default function PatientDetailPage() {
                 <Card className="text-center py-12">
                   <CardContent>
                     <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-foreground mb-2">No hay sesiones registradas</h3>
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-50 mb-2">No hay sesiones registradas</h3>
                     <p className="text-slate-600 dark:text-slate-300 mb-4">Comienza registrando la primera sesión con este paciente</p>
                     <Link href={`/sessions/new?patientId=${patient.id}`}>
                       <Button>Registrar Primera Sesión</Button>
@@ -345,7 +345,7 @@ export default function PatientDetailPage() {
               <CardContent>
                 <div className="text-center py-12">
                   <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">No hay informes generados</h3>
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-50 mb-2">No hay informes generados</h3>
                   <p className="text-slate-600 dark:text-slate-300 mb-4">Los informes aparecerán aquí cuando se generen con IA</p>
                   <Button variant="outline">
                     <Brain className="h-4 w-4 mr-2" />
